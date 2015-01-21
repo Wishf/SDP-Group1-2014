@@ -62,26 +62,15 @@ void readComms(){
     {
       debugPrint("MOTORS ");
       
-      int nextByte = waitForByte();      
-      motors[0] = nextByte - 128;
-      debugPrint(motors[0]);
-      debugPrint(" ");
+      int i = 0;
+      for( ; i < 4; i++)
+      {
+        int nextByte = waitForByte();      
+        motors[i] = nextByte - 128;
+        debugPrint(motors[i]);
+        debugPrint(" ");
+      }
       
-      
-      nextByte = waitForByte();      
-      motors[1] = nextByte - 128;
-      debugPrint(motors[1]);
-      debugPrint(" ");
-      
-      nextByte = waitForByte();      
-      motors[2] = nextByte - 128;
-      debugPrint(motors[2]);
-      debugPrint(" ");
-      
-      nextByte = waitForByte();      
-      motors[3] = nextByte - 128;     
-      debugPrint(motors[3]);
-      debugPrint(" ");
     }
     else if (incoming == 'K') // Kick
     {
@@ -89,6 +78,7 @@ void readComms(){
       
       int nextByte = waitForByte();   
       kick = true;
+
       kickPower = nextByte;
       
       debugPrint(" ");
