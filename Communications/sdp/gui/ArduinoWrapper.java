@@ -64,6 +64,7 @@ public class ArduinoWrapper implements Runnable {
         } else if(command.equals("20cm Backward")) {
             goForward(-20);
         } else if(command.equals("Kick")) {
+            guiframe.addDebugInfo("Kicking");
             rad.sendPacket(new KickPacket((byte) 5));
         }
 
@@ -76,6 +77,7 @@ public class ArduinoWrapper implements Runnable {
         if(cm < 0) {
             speed *= -1;
         }
+        guiframe.addDebugInfo("Going " + Integer.toString(cm) + "forward. Will take " + Integer.toString(time) +"ms");
         rad.sendPacket(new DrivePacket(speed, speed, (byte) 0, (byte) 0));
         try {
             thread.sleep(time);
@@ -83,6 +85,7 @@ public class ArduinoWrapper implements Runnable {
             e.printStackTrace();
         }
         rad.sendPacket(new DrivePacket((byte) 0, (byte) 0, (byte) 0, (byte) 0));
+        guiframe.addDebugInfo("Done.");
     }
     public void start() {
         if(thread == null) {
