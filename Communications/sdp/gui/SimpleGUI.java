@@ -22,13 +22,14 @@ public class SimpleGUI extends JFrame implements ActionListener {
 
     public SimpleGUI(ArduinoWrapper arduino) {
         this.arduino = arduino;
+        arduino.addFrame(this);
         arduino.start();
 
         panel = new JPanel();
         panel.setLayout(new FlowLayout());
         add(panel);
 
-        String[] buttons = { "Forward", "Backward", "Kick", "Start", "Stop" };
+        String[] buttons = { "50cm Forward", "10cm Forward", "20cm Backward", "Kick", "Start", "Stop", "Quit" };
         for(String button : buttons) {
             addButton(button, button);
         }
@@ -57,7 +58,6 @@ public class SimpleGUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         String command = actionEvent.getActionCommand();
-        if(command.equals("Start")) {
-        }
+        arduino.sendCommand(command);
     }
 }
