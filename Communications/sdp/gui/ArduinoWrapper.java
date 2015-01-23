@@ -12,20 +12,19 @@ public class ArduinoWrapper implements Runnable {
 
     private Thread thread;
     private Radio rad;
-    private SimpleGUI guiframe;
+    private SingletonDebugWindow debugWindow;
     private ArrayList<String> commandQueue;
-    private static int timePerCm = 5;
+    private static int timePerCm = 250;
 
     public ArduinoWrapper() {
         commandQueue = new ArrayList<String>();
+        debugWindow = new SingletonDebugWindow();
     }
 
-    public void addFrame(SimpleGUI pane) {
-        guiframe = pane;
-    }
 
     public void sendCommand(String comm) {
         commandQueue.add(comm);
+        System.out.println("Got command "+comm);
     }
 
     private String getNextCommand() {
@@ -64,28 +63,36 @@ public class ArduinoWrapper implements Runnable {
         } else if(command.equals("20cm Backward")) {
             goForward(-20);
         } else if(command.equals("Kick")) {
-            guiframe.addDebugInfo("Kicking");
-            rad.sendPacket(new KickPacket((byte) 5));
+            debugWindow.addDebugInfo("Kicking");
+            rad.sendPacket(new KickPacket((byte) 255));
+            try {
+                thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         return true;
     }
 
     private void goForward(int cm) {
-        byte speed = 100;
+        byte speed;
+        byte stop = (byte) 128;
         int time = Math.abs(cm*timePerCm);
         if(cm < 0) {
-            speed *= -1;
+            speed = 0;
+        } else {
+            speed = (byte) 255;
         }
-        guiframe.addDebugInfo("Going " + Integer.toString(cm) + "forward. Will take " + Integer.toString(time) +"ms");
-        rad.sendPacket(new DrivePacket(speed, speed, (byte) 0, (byte) 0));
+        debugWindow.addDebugInfo("Going " + Integer.toString(cm) + "cm forward. Will take " + Integer.toString(time) +"ms");
+        rad.sendPacket(new DrivePacket(speed, speed, stop, stop));
         try {
             thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        rad.sendPacket(new DrivePacket((byte) 0, (byte) 0, (byte) 0, (byte) 0));
-        guiframe.addDebugInfo("Done.");
+        rad.sendPacket(new DrivePacket(stop, stop, stop, stop));
+        debugWindow.addDebugInfo("Done.");
     }
     public void start() {
         if(thread == null) {
@@ -96,9 +103,10 @@ public class ArduinoWrapper implements Runnable {
 
     @Override
     public void run() {
-        rad = new Radio("COM3");
+        //rad = new Radio("COM1");
+        rad = new Radio("/dev/tty.usbmodem000001");
         rad.start();
-        guiframe.addDebugInfo("Started Arduino");
+        debugWindow.addDebugInfo("Started Arduino");
 
         boolean go = true;
 
@@ -106,7 +114,8 @@ public class ArduinoWrapper implements Runnable {
             go = performNextCommand();
         }
 
-        guiframe.addDebugInfo("Stopping Arduino and terminating...");
+        debugWindow.addDebugInfo("Stopping Arduino and terminating...");
         rad.stop();
+        System.exit(0);
     }
 }
