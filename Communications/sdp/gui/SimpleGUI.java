@@ -1,5 +1,7 @@
 package sdp.gui;
 
+import sdp.comms.Radio;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,6 +17,7 @@ public class SimpleGUI extends JFrame implements ActionListener {
     private JTextArea debugInfo;
 
     public static void main(String args[]) {
+        Radio.getPortNames();
         ArduinoWrapper arduino = new ArduinoWrapper();
         new SimpleGUI(arduino);
 
@@ -22,7 +25,6 @@ public class SimpleGUI extends JFrame implements ActionListener {
 
     public SimpleGUI(ArduinoWrapper arduino) {
         this.arduino = arduino;
-        arduino.addFrame(this);
         arduino.start();
 
         panel = new JPanel();
@@ -34,8 +36,8 @@ public class SimpleGUI extends JFrame implements ActionListener {
             addButton(button, button);
         }
 
-        debugInfo = new JTextArea(10, 30);
-        JScrollPane spane = new JScrollPane(debugInfo);
+        SingletonDebugWindow debugWindow = new SingletonDebugWindow();
+        JScrollPane spane = new JScrollPane(debugWindow.getTextArea());
         panel.add(spane);
 
 
@@ -45,9 +47,6 @@ public class SimpleGUI extends JFrame implements ActionListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void addDebugInfo(String info) {
-        debugInfo.append(info);
-    }
     private void addButton(String name, String command) {
         JButton button = new JButton(name);
         button.addActionListener(this);
