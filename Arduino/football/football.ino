@@ -2,19 +2,23 @@
 #include <Wire.h>
 
 
-#define DEBUG false
+#define DEBUG 1
 
 //Globals
 bool ON = false;
 
 //Moving
+#define MOTOR_1 0
+#define MOTOR_2 1
+
 bool motorsChanged = false;
 int motors[4] = {0,0,0,0};
+int motorDirs[4] = {1, -1, 0, 0};
 
 //Kicking
-#define KICK_DELAY_MOVING_UP 500
-#define KICK_DELAY_UP 100
-#define KICK_DELAY_MOVING_DOWN 500
+#define KICK_DELAY_MOVING_UP 300
+#define KICK_DELAY_UP 200
+#define KICK_DELAY_MOVING_DOWN 280
 
 #define KICK_STATE_IDLE 0
 #define KICK_STATE_START 1
@@ -23,6 +27,7 @@ int motors[4] = {0,0,0,0};
 #define KICK_STATE_MOVING_DOWN 4
 
 #define KICK_MOTOR 3
+#define KICK_MOTOR_DIR 1
 
 long kickStartTime;
 int kickState = KICK_STATE_IDLE;
@@ -56,6 +61,7 @@ void loop() {
   }
   else
   {    
+    motorAllStop();
   } 
 }
 
@@ -66,7 +72,7 @@ void doKick(){
     
     kickState = KICK_STATE_MOVING_UP;
     
-    motorForward(KICK_MOTOR, kickPower);
+    motorBackward(KICK_MOTOR, kickPower);
   }
   else if(kickState == KICK_STATE_MOVING_UP){
     if(millis() - kickStartTime > KICK_DELAY_MOVING_UP){
@@ -83,7 +89,7 @@ void doKick(){
       
       kickState = KICK_STATE_MOVING_DOWN;
       
-      motorBackward(KICK_MOTOR, 255);
+      motorForward(KICK_MOTOR, kickPower);
     }
   } 
   else if(kickState == KICK_STATE_MOVING_DOWN)
@@ -100,25 +106,32 @@ void doMotors(){
   if(motorsChanged){
     motorsChanged = false;
     
-    int i = 1;
-    for( ; i < 3; i++)
+    
+    debugPrint("-SETTINGMOTORS-");
+    
+    int i = 0;
+    for( ; i < 4; i++)
     {
+       if(motorDirs[i] == 0){
+         continue;
+       }
       
-      
-      if(motors[i] > 0){
-        int power = motors[i] * 2;
-        
-        motorBackward(i, power);
-      }
-      else if(motors[i] < 0){
-        
-        int power = -motors[i] * 2;
-        
-        motorBackward(i, power);
-      }
-      else{
-       motorStop(i);  
-      }
+      int prePower = motors[i] * motorDirs[i];
+      if(prePower > 0){
+          int power = prePower * 2;          
+          
+          motorForward(i, power);
+        }
+        else if(prePower < 0){
+          
+          int power = -prePower * 2;
+          
+          motorBackward(i, power);
+        }
+        else{
+         motorStop(i);  
+        }      
+            
     }    
   } 
 }
