@@ -2,21 +2,22 @@
 #include <Wire.h>
 
 
-#define DEBUG 0
+#define DEBUG 1
 
 //Globals
 bool ON = false;
 
 //Moving
 bool motorsChanged = false;
-byte motorMapping[4] = {0, 1, -1, -1};
-int motors[4] = {0,0,0,0};
-int motorDirs[4] = {-1, 1, 0, 0};
+byte motorMapping[2] = {0, 1};
+int motorPower[2] = {0,0};
+int motorDirs[2] = {-1, 1};
+int motorMultiplier[2] = {-1, 1};
 
 //Kicking
-#define KICK_DELAY_MOVING_UP 300
+#define KICK_DELAY_MOVING_UP 250
 #define KICK_DELAY_UP 200
-#define KICK_DELAY_MOVING_DOWN 280
+#define KICK_DELAY_MOVING_DOWN 220
 
 #define KICK_STATE_IDLE 0
 #define KICK_STATE_START 1
@@ -65,7 +66,16 @@ void loop() {
 
 
 void moveMotor(int motor, int power){
-  if(power > 0){
+  /*
+  debugPrint("\n***MM ");
+  debugPrint(motor);
+  debugPrint(", ");
+  debugPrint(power);
+  debugPrint(" **\n");
+  */
+  
+  
+  if(power >= 0){
     motorForward(motor, power);
   }
   else if(power < 0){
@@ -119,10 +129,10 @@ void doMotors(){
     motorsChanged = false;    
     
     int i = 0;
-    for( ; i < 4; i++)
+    for( ; i < 2; i++)
     {
        if(motorMapping[i] > -1){
-         moveMotor(motorMapping[i], motors[i] * motorDirs[i] * 2);
+         moveMotor(motorMapping[i], motorPower[i] * motorDirs[i] * motorMultiplier[i]);
        }        
     }    
   } 
@@ -155,11 +165,19 @@ void readComms(){
       debugPrint("MOTORS ");
       
       int i = 0;
-      for( ; i < 4; i++)
+      for( ; i < 2; i++)
       {
         int nextByte = waitForByte();      
-        motors[i] = (int)nextByte - 128;
-        debugPrint(motors[i]);
+        motorPower[i] = nextByte;
+        nextByte = waitForByte();
+        
+        if(nextByte == 0)
+          motorDirs[i] = 1;
+        else
+          motorDirs[i] = -1;
+        
+        
+        debugPrint(motorPower[i]);
         debugPrint(" ");
       }
       
