@@ -11,7 +11,7 @@ public class SingletonDebugWindow {
 
     public SingletonDebugWindow() {
         if(debugInfo == null) {
-            debugInfo = new JTextArea(10,30);
+            debugInfo = new JTextArea(13,30);
         }
     }
 

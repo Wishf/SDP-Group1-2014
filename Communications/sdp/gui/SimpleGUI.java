@@ -33,7 +33,7 @@ public class SimpleGUI extends JFrame implements ActionListener {
         panel.setLayout(new FlowLayout());
         add(panel);
 
-        String[] buttons = { "50cm Forward", "10cm Forward", "20cm Backward", "Kick", "Activate", "Deactivate", "Start", "Stop", "Quit" };
+        String[] buttons = { "50cm Forward", "10cm Forward", "20cm Backward", "Kick", "Activate", "Deactivate", "Dance Like a Wee Lassie", "Start", "Stop", "Quit" };
         for(String button : buttons) {
             addButton(button, button);
         }
@@ -52,7 +52,7 @@ public class SimpleGUI extends JFrame implements ActionListener {
         panel.add(spane);
 
 
-        setSize(new Dimension(400, 300));
+        setSize(new Dimension(400, 400));
         setTitle("SDP Group 1 // Simple GUI");
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
