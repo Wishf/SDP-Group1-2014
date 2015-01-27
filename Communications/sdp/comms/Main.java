@@ -6,7 +6,7 @@ import sdp.comms.packets.DeactivatePacket;
 public class Main {
 
     public static void main(String[] args) {
-        Radio rad = new Radio("COM3");
+        Radio rad = new Radio("/dev/tty.usbmodem000001");
         rad.start();
         rad.sendPacket(new ActivatePacket());
         try {

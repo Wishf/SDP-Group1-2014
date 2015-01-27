@@ -2,7 +2,9 @@ package sdp.comms;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import jssc.SerialPortList;
 import sdp.comms.packets.Packet;
+import sdp.gui.SingletonDebugWindow;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -11,6 +13,13 @@ import java.util.Queue;
  * Created by Matthew on 16/01/2015.
  */
 public class Radio {
+
+    public static void getPortNames() {
+        SingletonDebugWindow debugWindow = new SingletonDebugWindow();
+        for (String s : SerialPortList.getPortNames()) {
+            debugWindow.addDebugInfo(s);
+        }
+    }
     private SerialPort port;
     private Queue<Packet> packetQueue;
 
@@ -28,12 +37,9 @@ public class Radio {
                     SerialPort.PARITY_NONE);
             port.setEventsMask(SerialPort.MASK_RXCHAR);
             port.addEventListener(new RadioController(packetQueue, port));
-            Thread.sleep(5000);
         }
         catch(SerialPortException ex) {
             ex.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

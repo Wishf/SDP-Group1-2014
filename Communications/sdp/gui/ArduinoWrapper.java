@@ -11,16 +11,22 @@ import java.util.ArrayList;
 public class ArduinoWrapper implements Runnable {
 
     private Thread thread;
-    private Radio rad;
+    private SingletonRadio rad;
     private SingletonDebugWindow debugWindow;
     private ArrayList<String> commandQueue;
-    private static int timePerCm = 250;
+    private int kickPower;
+    private static int timePerCm = 50;
 
     public ArduinoWrapper() {
         commandQueue = new ArrayList<String>();
         debugWindow = new SingletonDebugWindow();
+        kickPower = 255;
     }
 
+    public void setKickPower(int power) {
+        kickPower = power;
+        debugWindow.addDebugInfo("Setting KP to " + Integer.toString(kickPower));
+    }
 
     public void sendCommand(String comm) {
         commandQueue.add(comm);
@@ -28,15 +34,14 @@ public class ArduinoWrapper implements Runnable {
     }
 
     private String getNextCommand() {
-        String command = "";
+        String command = null;
 
-        while(command.equals("")) {
+        while(command == null) {
             if(commandQueue.size() > 0 ) {
                 command = commandQueue.remove(0);
             } else {
-                command = "";
                 try {
-                    thread.sleep(200);
+                    thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -53,45 +58,62 @@ public class ArduinoWrapper implements Runnable {
         if(command.equals("Quit")) {
             return false;
         } else if(command.equals("Start")) {
-            rad.start();
+            //rad.start();
+            rad.sendPacket(new ActivatePacket());
         } else if(command.equals("Stop")) {
-            rad.stop();
+            //rad.stop();
         } else if(command.equals("50cm Forward")) {
-            goForward(50);
+            goForward(42);
         } else if(command.equals("10cm Forward")) {
-            goForward(10);
+            goForward(15);
         } else if(command.equals("20cm Backward")) {
-            goForward(-20);
+            //goForward(-21);
+            goForward(-42);
+        } else if(command.equals("Activate")) {
+            rad.sendPacket(new ActivatePacket());
+        } else if(command.equals("Deactivate")) {
+            rad.sendPacket(new DeactivatePacket());
         } else if(command.equals("Kick")) {
             debugWindow.addDebugInfo("Kicking");
-            rad.sendPacket(new KickPacket((byte) 255));
-            try {
-                thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            rad.sendPacket(new KickPacket((byte) kickPower));
+        } else if(command.equals("Dance Like a Wee Lassie")) {
+            danceLassie();
         }
 
         return true;
     }
 
+    private void danceLassie() {
+        byte stop = 0;
+        rad.sendPacket(new DrivePacket((byte)200, (byte) 1, (byte)200, (byte)0));
+        PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), 5000);
+        plt.start();
+    }
+
     private void goForward(int cm) {
-        byte speed;
-        byte stop = (byte) 128;
+        byte speed_l, speed_r;
+        byte dir_l, dir_r;
+        byte stop = (byte) 0;
         int time = Math.abs(cm*timePerCm);
         if(cm < 0) {
-            speed = 0;
+            // Backward
+            speed_l = (byte) 188; //188
+            speed_r = (byte) 188;
+            dir_l = 1;
+            dir_r = 1;
         } else {
-            speed = (byte) 255;
+            // Forward
+            speed_l = (byte) 188;
+            speed_r = (byte) 188; //163
+            dir_l = 0;
+            dir_r = 0;
+
+
         }
-        debugWindow.addDebugInfo("Going " + Integer.toString(cm) + "cm forward. Will take " + Integer.toString(time) +"ms");
-        rad.sendPacket(new DrivePacket(speed, speed, stop, stop));
-        try {
-            thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        rad.sendPacket(new DrivePacket(stop, stop, stop, stop));
+        debugWindow.addDebugInfo("Going " + Integer.toString(cm) + "cm forward. Will take " + Integer.toString(time) + "ms");
+        rad.sendPacket(new DrivePacket(speed_l, dir_l, speed_r, dir_r));
+        PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), time);
+        plt.start();
         debugWindow.addDebugInfo("Done.");
     }
     public void start() {
@@ -103,9 +125,7 @@ public class ArduinoWrapper implements Runnable {
 
     @Override
     public void run() {
-        //rad = new Radio("COM1");
-        rad = new Radio("/dev/tty.usbmodem000001");
-        rad.start();
+        rad = new SingletonRadio();
         debugWindow.addDebugInfo("Started Arduino");
 
         boolean go = true;
@@ -115,7 +135,6 @@ public class ArduinoWrapper implements Runnable {
         }
 
         debugWindow.addDebugInfo("Stopping Arduino and terminating...");
-        rad.stop();
         System.exit(0);
     }
 }
