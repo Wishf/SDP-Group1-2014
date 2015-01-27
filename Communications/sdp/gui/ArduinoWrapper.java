@@ -87,25 +87,26 @@ public class ArduinoWrapper implements Runnable {
 
     private void goForward(int cm) {
         byte speed_l, speed_r;
+        byte dir_l, dir_r;
         byte stop = (byte) 128;
         int time = Math.abs(cm*timePerCm);
         if(cm < 0) {
+            // Backward
             speed_l = 61;
             speed_r = 64;
+            dir_l = 1;
+            dir_r = 1;
         } else {
-            speed_l = (byte) 128+64;
-            speed_r = (byte) 128+61;
+            // Forward
+            speed_l = 64;
+            speed_r = 61;
+            dir_l = 0;
+            dir_r = 0;
         }
         debugWindow.addDebugInfo("Going " + Integer.toString(cm) + "cm forward. Will take " + Integer.toString(time) + "ms");
-        rad.sendPacket(new DrivePacket((byte) speed_l, speed_r, stop, stop));
-        /*try {
-            thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        rad.sendPacket(new DrivePacket((byte) speed_l, dir_l, speed_r, dir_r));
         PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), time);
         plt.start();
-        //rad.sendPacket(new DrivePacket(stop, stop, stop, stop));
         debugWindow.addDebugInfo("Done.");
     }
     public void start() {
