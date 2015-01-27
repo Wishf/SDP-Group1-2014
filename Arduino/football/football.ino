@@ -2,18 +2,16 @@
 #include <Wire.h>
 
 
-#define DEBUG 1
+#define DEBUG 0
 
 //Globals
 bool ON = false;
 
 //Moving
-#define MOTOR_1 0
-#define MOTOR_2 1
-
 bool motorsChanged = false;
+byte motorMapping[4] = {0, 1, -1, -1};
 int motors[4] = {0,0,0,0};
-int motorDirs[4] = {1, -1, 0, 0};
+int motorDirs[4] = {-1, 1, 0, 0};
 
 //Kicking
 #define KICK_DELAY_MOVING_UP 300
@@ -27,7 +25,7 @@ int motorDirs[4] = {1, -1, 0, 0};
 #define KICK_STATE_MOVING_DOWN 4
 
 #define KICK_MOTOR 3
-#define KICK_MOTOR_DIR 1
+#define KICK_MOTOR_DIR -1
 
 long kickStartTime;
 int kickState = KICK_STATE_IDLE;
@@ -66,13 +64,27 @@ void loop() {
 }
 
 
-void doKick(){
+void moveMotor(int motor, int power){
+  if(power > 0){
+    motorForward(motor, power);
+  }
+  else if(power < 0){
+    motorBackward(motor, -power);
+  }
+  else {
+    motorStop(motor);
+  }
+}
+
+
+
+void doKick(){  
   if(kickState == KICK_STATE_START){
     kickStartTime = millis();
     
     kickState = KICK_STATE_MOVING_UP;
     
-    motorBackward(KICK_MOTOR, kickPower);
+    moveMotor(KICK_MOTOR, kickPower * KICK_MOTOR_DIR);
   }
   else if(kickState == KICK_STATE_MOVING_UP){
     if(millis() - kickStartTime > KICK_DELAY_MOVING_UP){
@@ -89,7 +101,7 @@ void doKick(){
       
       kickState = KICK_STATE_MOVING_DOWN;
       
-      motorForward(KICK_MOTOR, kickPower);
+      moveMotor(KICK_MOTOR, -kickPower * KICK_MOTOR_DIR);
     }
   } 
   else if(kickState == KICK_STATE_MOVING_DOWN)
@@ -104,34 +116,14 @@ void doKick(){
 
 void doMotors(){
   if(motorsChanged){
-    motorsChanged = false;
-    
-    
-    debugPrint("-SETTINGMOTORS-");
+    motorsChanged = false;    
     
     int i = 0;
     for( ; i < 4; i++)
     {
-       if(motorDirs[i] == 0){
-         continue;
-       }
-      
-      int prePower = motors[i] * motorDirs[i];
-      if(prePower > 0){
-          int power = prePower * 2;          
-          
-          motorForward(i, power);
-        }
-        else if(prePower < 0){
-          
-          int power = -prePower * 2;
-          
-          motorBackward(i, power);
-        }
-        else{
-         motorStop(i);  
-        }      
-            
+       if(motorMapping[i] > -1){
+         moveMotor(motorMapping[i], motors[i] * motorDirs[i] * 2);
+       }        
     }    
   } 
 }
@@ -152,6 +144,9 @@ void readComms(){
       Serial.print('C');
       debugPrint("ACTIVATED ");
       ON = true;
+      
+      motorsChanged = false;
+      kickState = KICK_STATE_IDLE;
       
     }
     else if (incoming == 'M') // Motor
@@ -181,15 +176,10 @@ void readComms(){
       if(kickState == KICK_STATE_IDLE){
         kickState = KICK_STATE_START;
         kickPower = nextByte;
-      }
-      
+      }      
       
       debugPrint(" ");
-      debugPrint(kickPower);
-      
-      
-      
-      
+      debugPrint(kickPower);      
     }
     else if (incoming == 'R') // Sensor read
     {
@@ -205,9 +195,9 @@ void readComms(){
       Serial.print("1234");
     }
     else{
-      debugPrint(" GET OFF MY LAWN ");
-      
       Serial.print('E');
+      
+      debugPrint(" GET OFF MY LAWN ");      
     }
   }   
 }
