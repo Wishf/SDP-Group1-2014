@@ -15,7 +15,7 @@ public class ArduinoWrapper implements Runnable {
     private SingletonDebugWindow debugWindow;
     private ArrayList<String> commandQueue;
     private int kickPower;
-    private static int timePerCm = 50;
+    private static int timePerCm = 150;
 
     public ArduinoWrapper() {
         commandQueue = new ArrayList<String>();
@@ -63,12 +63,11 @@ public class ArduinoWrapper implements Runnable {
         } else if(command.equals("Stop")) {
             //rad.stop();
         } else if(command.equals("50cm Forward")) {
-            goForward(42);
+            goForward(73);
         } else if(command.equals("10cm Forward")) {
-            goForward(15);
+            goForward(27);
         } else if(command.equals("20cm Backward")) {
-            //goForward(-21);
-            goForward(-42);
+            goForward(-44);
         } else if(command.equals("Activate")) {
             rad.sendPacket(new ActivatePacket());
         } else if(command.equals("Deactivate")) {
@@ -85,9 +84,9 @@ public class ArduinoWrapper implements Runnable {
 
     private void danceLassie() {
         byte stop = 0;
-        rad.sendPacket(new DrivePacket((byte)200, (byte) 1, (byte)200, (byte)0));
-        PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), 5000);
-        plt.start();
+        //rad.sendPacket(new DrivePacket((byte)200, (byte) 1, (byte)200, (byte)0));
+        //PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), 5000);
+        //plt.start();
     }
 
     private void goForward(int cm) {
@@ -98,22 +97,22 @@ public class ArduinoWrapper implements Runnable {
         if(cm < 0) {
             // Backward
             speed_l = (byte) 188; //188
-            speed_r = (byte) 188;
+            speed_r = (byte) 158;
             dir_l = 1;
             dir_r = 1;
         } else {
             // Forward
-            speed_l = (byte) 188;
-            speed_r = (byte) 188; //163
+            speed_l = (byte) 255;
+            speed_r = (byte) 255; //163
             dir_l = 0;
             dir_r = 0;
 
 
         }
         debugWindow.addDebugInfo("Going " + Integer.toString(cm) + "cm forward. Will take " + Integer.toString(time) + "ms");
-        rad.sendPacket(new DrivePacket(speed_l, dir_l, speed_r, dir_r));
-        PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), time);
-        plt.start();
+        //rad.sendPacket(new DrivePacket(speed_l, dir_l, speed_r, dir_r));
+        //PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), time);
+        //plt.start();
         debugWindow.addDebugInfo("Done.");
     }
     public void start() {

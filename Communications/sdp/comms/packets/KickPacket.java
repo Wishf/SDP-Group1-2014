@@ -2,20 +2,25 @@ package sdp.comms.packets;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import sdp.util.CircularByteBuffer;
 
-import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Created by Matthew on 16/01/2015.
  */
 public class KickPacket extends Packet {
     public static final byte ID = 'K';
+    public static final int Length = 2;
 
     private byte power;
 
     public KickPacket(byte power) {
         this.power = power;
     }
+
+    // Empty constructor
+    public KickPacket(){}
 
     @Override
     public byte getID() {
@@ -29,7 +34,11 @@ public class KickPacket extends Packet {
     }
 
     @Override
-    public Packet readPacket(InputStream stream) {
-        return new KickPacket((byte)0x0);
+    public void readPacket(CircularByteBuffer stream) {
+        try {
+            power = stream.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

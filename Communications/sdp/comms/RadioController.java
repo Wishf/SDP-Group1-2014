@@ -4,9 +4,11 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
-import sdp.comms.packets.Packet;
-import sdp.gui.SingletonDebugWindow;
+import sdp.comms.packets.*;
+import sdp.util.CircularByteBuffer;
 
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.util.Queue;
 
 /**
@@ -15,27 +17,93 @@ import java.util.Queue;
 public class RadioController implements SerialPortEventListener {
     private Queue<Packet> packets;
     private SerialPort parent;
-    private SingletonDebugWindow debugWindow;
+    private CircularByteBuffer buffer;
+    private Queue<Packet> inbound;
 
-    public RadioController(Queue<Packet> packets, SerialPort parent) {
+    public RadioController(Queue<Packet> packets, SerialPort parent, Queue<Packet> inbound) {
         this.packets = packets;
         this.parent = parent;
-        debugWindow = new SingletonDebugWindow();
+        this.buffer = CircularByteBuffer.allocate(10*1024);
+        this.inbound = inbound;
     }
 
     @Override
     public void serialEvent(SerialPortEvent event) {
         // Message received
         if(event.isRXCHAR()) {
-            if(event.getEventValue() >= 1) {
-                String val = null;
+            try {
+                buffer.write(parent.readBytes(event.getEventValue()), event.getEventValue());
+            } catch (SerialPortException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            while(buffer.elements() > 0) {
+
                 try {
-                    val = parent.readString();
-                } catch (SerialPortException e) {
+                    byte peeked_id = buffer.peek();
+                    Packet read = null;
+                    if (peeked_id == ActivatePacket.ID) {
+                        if (buffer.elements() < ActivatePacket.Length) {
+                            break;
+                        }
+
+                        read = new ActivatePacket();
+                    } else if (peeked_id == AcknowledgePacket.ID) {
+                        if (buffer.elements() < AcknowledgePacket.Length) {
+                            break;
+                        }
+
+                        read = new AcknowledgePacket();
+                    } else if (peeked_id == DeactivatePacket.ID) {
+                        if (buffer.elements() < DeactivatePacket.Length) {
+                            break;
+                        }
+
+                        read = new DeactivatePacket();
+                    } else if (peeked_id == DrivePacket.ID) {
+                        if (buffer.elements() < DrivePacket.Length) {
+                            break;
+                        }
+
+                        read = new DrivePacket();
+                    } else if (peeked_id == ErrorPacket.ID) {
+                        if (buffer.elements() < ErrorPacket.Length) {
+                            break;
+                        }
+
+                        read = new ErrorPacket();
+                    } else if (peeked_id == KickPacket.ID) {
+                        if (buffer.elements() < KickPacket.Length) {
+                            break;
+                        }
+
+                        read = new KickPacket();
+                    } else if (peeked_id == ReadSensorPacket.ID) {
+                        if (buffer.elements() < ReadSensorPacket.Length) {
+                            break;
+                        }
+
+                        read = new ReadSensorPacket();
+                    } else if (peeked_id == SensorDataPacket.ID) {
+                        if (buffer.elements() < SensorDataPacket.Length) {
+                            break;
+                        }
+
+                        read = new SensorDataPacket();
+                    } else {
+                        // Throw away garbage bytes
+                        buffer.discard();
+                        continue;
+                    }
+                    // Throw away ID byte before parsing rest of packet
+                    buffer.discard();
+                    read.readPacket(buffer);
+                    inbound.add(read);
+                } catch (BufferUnderflowException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
-                }
-                if (val != null) {
-                    debugWindow.addDebugInfo(val);
                 }
             }
         }

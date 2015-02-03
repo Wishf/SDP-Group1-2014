@@ -4,14 +4,16 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import sdp.util.CircularByteBuffer;
 
-import java.nio.ByteBuffer;
-
 /**
- * Created by Matthew Summers on 16/01/2015.
+ * Created by Matthew on 03/02/2015.
  */
-public class ErrorPacket extends Packet {
-    public final static byte ID = 'E';
-    public final static int Length = 1;
+public class ClearQueuePacket extends Packet {
+    public static final byte ID = 'L';
+    public static final int Length = 1;
+
+    public ClearQueuePacket() {
+
+    }
 
     @Override
     public byte getID() {
@@ -25,5 +27,6 @@ public class ErrorPacket extends Packet {
 
     @Override
     public void readPacket(CircularByteBuffer stream) {
+
     }
 }
