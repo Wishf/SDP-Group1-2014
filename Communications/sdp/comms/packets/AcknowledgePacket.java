@@ -2,14 +2,16 @@ package sdp.comms.packets;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import sdp.util.CircularByteBuffer;
 
-import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Created by Matthew Summers on 16/01/2015.
  */
 public class AcknowledgePacket extends Packet {
     public final static byte ID = 'C';
+    public static final int Length = 1;
 
     @Override
     public byte getID() {
@@ -22,7 +24,6 @@ public class AcknowledgePacket extends Packet {
     }
 
     @Override
-    public Packet readPacket(InputStream stream) {
-        return new AcknowledgePacket();
+    public void readPacket(CircularByteBuffer stream) {
     }
 }

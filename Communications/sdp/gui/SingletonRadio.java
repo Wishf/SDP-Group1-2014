@@ -11,8 +11,7 @@ public class SingletonRadio {
 
     public SingletonRadio() {
         if(rad == null) {
-            //rad = new Radio("/dev/tty.usbmodem000001");
-        	rad = new Radio("COM5");
+            rad = new Radio("COM3");
             rad.start();
             rad.sendPacket(new ActivatePacket());
         }
