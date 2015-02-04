@@ -8,11 +8,12 @@
 bool ON = false;
 
 //Moving
+#define MOTOR_N 3
 bool motorsChanged = false;
-byte motorMapping[2] = {0, 1};
-int motorPower[2] = {0,0};
-int motorDirs[2] = {-1, 1};
-int motorMultiplier[2] = {-1, 1};
+byte motorMapping[MOTOR_N] = {0, 1, 2};
+int motorPower[MOTOR_N] = {0,0,0};
+int motorDirs[MOTOR_N] = {1, 1, 1};
+int motorMultiplier[MOTOR_N] = {1, 1, 1};
 
 //Kicking
 #define KICK_DELAY_MOVING_UP 250
@@ -129,7 +130,7 @@ void doMotors(){
     motorsChanged = false;    
     
     int i = 0;
-    for( ; i < 2; i++)
+    for( ; i < MOTOR_N; i++)
     {
        if(motorMapping[i] > -1){
          moveMotor(motorMapping[i], motorPower[i] * motorDirs[i] * motorMultiplier[i]);
@@ -165,12 +166,13 @@ void readComms(){
       debugPrint("MOTORS ");
       
       int i = 0;
-      for( ; i < 2; i++)
+      for( ; i < MOTOR_N; i++)
       {
         int nextByte = waitForByte();      
         motorPower[i] = nextByte;
-        nextByte = waitForByte();
         
+        
+        nextByte = waitForByte();        
         if(nextByte == 0)
           motorDirs[i] = 1;
         else
