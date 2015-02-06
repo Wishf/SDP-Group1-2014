@@ -561,7 +561,7 @@ public class PassingStrategy extends GeneralStrategy {
 						attackerBrick.execute(new RobotCommand.Travel(
 								travelDist, travelSpeed));
 						defenderBrick.execute(new RobotCommand.Rotate(rotateBy,
-								Math.abs(rotateBy)));
+								(byte)Math.abs(rotateBy)));
 						break;
 					case MOVENROTATE:
 						defenderBrick.executeSync(new RobotCommand.Travel(

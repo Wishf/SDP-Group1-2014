@@ -56,8 +56,9 @@ public class RobotCommand {
 	public static class Kick extends GenericCommand {
 		private byte speed;
 
-		public Kick(byte speed) {
-			this.speed = speed;
+		public Kick(int speed) {
+			// The speed parameter is in percent, so we can scale it by multipling against 255
+			this.speed = (byte)Math.round((speed / 100f) * 255);
 		}
 
 		@Override
@@ -96,17 +97,18 @@ public class RobotCommand {
         private DriveDirection direction;
 		private byte speed;
 
-		public Rotate(int angle, byte speed, boolean immediateReturn){
+		public Rotate(int angle, int speed, boolean immediateReturn){
             if(angle > 0) {
 
             } else {
 
             }
 			this.angle = angle;
-			this.speed = speed;
+			// TODO: The speeds passed as parameters are tuned for group 9's robot; we'll need to scale them
+			this.speed = (byte)speed;
 		}
 		
-		public Rotate(int angle, byte speed) {
+		public Rotate(int angle, int speed) {
 			this(angle, speed, true);
 		}
 
