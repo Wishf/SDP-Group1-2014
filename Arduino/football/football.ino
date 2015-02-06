@@ -249,6 +249,16 @@ void readComms(){
       Serial.print('C');
       debugPrint("pop");
     }
+    else if (incoming == 'N') // Engage catcher
+    {
+      Serial.print('C');
+      debugPrint("catch");
+    }
+    else if (incoming == 'I') // Disengage catcher
+    {
+      Serial.print('C');
+      debugPrint("uncatch");
+    }
     else{
       Serial.print('E');
       
