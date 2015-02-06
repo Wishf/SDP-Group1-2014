@@ -251,12 +251,12 @@ void readComms(){
     }
     else if (incoming == 'N') // Engage catcher
     {
-      Serial.print('C');
+      Serial.print('G');
       debugPrint("catch");
     }
     else if (incoming == 'I') // Disengage catcher
     {
-      Serial.print('C');
+      Serial.print('G');
       debugPrint("uncatch");
     }
     else{

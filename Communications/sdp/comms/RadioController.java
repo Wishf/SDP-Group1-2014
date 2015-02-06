@@ -95,41 +95,47 @@ public class RadioController implements SerialPortEventListener {
 
                         read = new SensorDataPacket();
                     } else if (peeked_id == EnqueueMotionPacket.ID) {
-                        if (buffer.elements() < EnqueueMotionPacket.ID) {
+                        if (buffer.elements() < EnqueueMotionPacket.Length) {
                             break;
                         }
 
                         read = new EnqueueMotionPacket();
                     } else if (peeked_id == MotionCompletePacket.ID) {
-                        if (buffer.elements() < MotionCompletePacket.ID) {
+                        if (buffer.elements() < MotionCompletePacket.Length) {
                             break;
                         }
 
                         read = new MotionCompletePacket();
                     } else if (peeked_id == ClearQueuePacket.ID) {
-                        if (buffer.elements() < ClearQueuePacket.ID) {
+                        if (buffer.elements() < ClearQueuePacket.Length) {
                             break;
                         }
 
                         read = new ClearQueuePacket();
                     } else if (peeked_id == PopQueuePacket.ID) {
-                        if (buffer.elements() < PopQueuePacket.ID) {
+                        if (buffer.elements() < PopQueuePacket.Length) {
                             break;
                         }
 
                         read = new PopQueuePacket();
                     } else if (peeked_id == DisengageCatcherPacket.ID) {
-                        if(buffer.elements() < DisengageCatcherPacket.ID) {
+                        if(buffer.elements() < DisengageCatcherPacket.Length) {
                             break;
                         }
 
                         read = new DisengageCatcherPacket();
                     } else if (peeked_id == EngageCatcherPacket.ID) {
-                        if (buffer.elements() < EngageCatcherPacket.ID) {
+                        if (buffer.elements() < EngageCatcherPacket.Length) {
                             break;
                         }
 
                         read = new EngageCatcherPacket();
+                    } else if (peeked_id == CatcherStateToggledPacket.ID) {
+                        if (buffer.elements() < CatcherStateToggledPacket.Length) {
+                            break;
+                        }
+
+                        read = new CatcherStateToggledPacket();
                     } else {
                         // Throw away garbage bytes
                         buffer.discard();
