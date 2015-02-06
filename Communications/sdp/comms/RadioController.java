@@ -9,6 +9,7 @@ import sdp.util.CircularByteBuffer;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -18,13 +19,13 @@ public class RadioController implements SerialPortEventListener {
     private Queue<Packet> packets;
     private SerialPort parent;
     private CircularByteBuffer buffer;
-    private Queue<Packet> inbound;
+    private List<PacketListener> listeners;
 
-    public RadioController(Queue<Packet> packets, SerialPort parent, Queue<Packet> inbound) {
+    public RadioController(Queue<Packet> packets, SerialPort parent, List<PacketListener> listeners) {
         this.packets = packets;
         this.parent = parent;
         this.buffer = CircularByteBuffer.allocate(10*1024);
-        this.inbound = inbound;
+        this.listeners = listeners;
     }
 
     @Override
@@ -43,6 +44,8 @@ public class RadioController implements SerialPortEventListener {
                 try {
                     byte peeked_id = buffer.peek();
                     Packet read = null;
+
+                    // TODO: Refactor this unholy mess
                     if (peeked_id == ActivatePacket.ID) {
                         if (buffer.elements() < ActivatePacket.Length) {
                             break;
@@ -115,6 +118,18 @@ public class RadioController implements SerialPortEventListener {
                         }
 
                         read = new PopQueuePacket();
+                    } else if (peeked_id == DisengageCatcherPacket.ID) {
+                        if(buffer.elements() < DisengageCatcherPacket.ID) {
+                            break;
+                        }
+
+                        read = new DisengageCatcherPacket();
+                    } else if (peeked_id == EngageCatcherPacket.ID) {
+                        if (buffer.elements() < EngageCatcherPacket.ID) {
+                            break;
+                        }
+
+                        read = new EngageCatcherPacket();
                     } else {
                         // Throw away garbage bytes
                         buffer.discard();
@@ -123,13 +138,19 @@ public class RadioController implements SerialPortEventListener {
                     // Throw away ID byte before parsing rest of packet
                     buffer.discard();
                     read.readPacket(buffer);
-                    inbound.add(read);
+                    this.dispatch(read);
                 } catch (BufferUnderflowException e) {
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void dispatch(Packet read) {
+        for(PacketListener listener: listeners) {
+            listener.packetArrived(read);
         }
     }
 }

@@ -9,6 +9,7 @@ import sdp.gui.SingletonDebugWindow;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -17,12 +18,12 @@ import java.util.Queue;
 public class Radio {
     private SerialPort port;
     private Queue<Packet> packetQueue;
-    protected Queue<Packet> inboundQueue;
+    private List<PacketListener> listenerList;
 
     public Radio(String portName){
         port = new SerialPort(portName);
         packetQueue = new LinkedList<Packet>();
-        inboundQueue = new LinkedList<Packet>();
+        listenerList = new LinkedList<PacketListener>();
     }
 
     public static void getPortNames() {
@@ -40,7 +41,7 @@ public class Radio {
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
             port.setEventsMask(SerialPort.MASK_RXCHAR);
-            port.addEventListener(new RadioController(packetQueue, port, inboundQueue));
+            port.addEventListener(new RadioController(packetQueue, port, listenerList));
         }
         catch(SerialPortException ex) {
             ex.printStackTrace();
@@ -68,11 +69,7 @@ public class Radio {
         }
     }
 
-    public Packet receivePacket(){
-        Packet next = inboundQueue.poll();
-        if(next != null){
-            return next;
-        }
-        return null;
+    public void addListener(PacketListener listener) {
+        listenerList.add(listener);
     }
 }
