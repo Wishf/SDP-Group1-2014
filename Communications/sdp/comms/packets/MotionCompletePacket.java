@@ -8,8 +8,8 @@ import sdp.util.CircularByteBuffer;
  * Created by Matthew on 06/02/2015.
  */
 public class MotionCompletePacket extends Packet {
-    private static final byte ID = 'O';
-    private static final byte Length = 1;
+    public static final byte ID = 'O';
+    public static final byte Length = 1;
 
     public MotionCompletePacket()
     {

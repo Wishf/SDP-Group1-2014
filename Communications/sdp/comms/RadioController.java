@@ -91,6 +91,30 @@ public class RadioController implements SerialPortEventListener {
                         }
 
                         read = new SensorDataPacket();
+                    } else if (peeked_id == EnqueueMotionPacket.ID) {
+                        if (buffer.elements() < EnqueueMotionPacket.ID) {
+                            break;
+                        }
+
+                        read = new EnqueueMotionPacket();
+                    } else if (peeked_id == MotionCompletePacket.ID) {
+                        if (buffer.elements() < MotionCompletePacket.ID) {
+                            break;
+                        }
+
+                        read = new MotionCompletePacket();
+                    } else if (peeked_id == ClearQueuePacket.ID) {
+                        if (buffer.elements() < ClearQueuePacket.ID) {
+                            break;
+                        }
+
+                        read = new ClearQueuePacket();
+                    } else if (peeked_id == PopQueuePacket.ID) {
+                        if (buffer.elements() < PopQueuePacket.ID) {
+                            break;
+                        }
+
+                        read = new PopQueuePacket();
                     } else {
                         // Throw away garbage bytes
                         buffer.discard();

@@ -40,6 +40,10 @@ public class EnqueueMotionPacket extends Packet {
 
     }
 
+    public EnqueueMotionPacket()
+    {
+    }
+
     @Override
     public byte getID() {
         return ID;
