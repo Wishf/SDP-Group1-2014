@@ -48,14 +48,14 @@ public class StrategySelectorTool implements GUITool {
 
 		Container contentPane = subWindow.getContentPane();
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-		contentPane.add(new ConnectionControl("Attacker", sc.bcsAttacker,
-				BtInfo.group10));
-		contentPane.add(new ConnectionControl("Defender", sc.bcsDefender,
-				BtInfo.MEOW));
-		contentPane.add(new ConnectionControl("Attacker", sc.bcsAttacker,
-				BtInfo.DemoD));
-		contentPane.add(new ConnectionControl("Defender", sc.bcsDefender,
-				BtInfo.DemoA));
+//		contentPane.add(new ConnectionControl("Attacker", sc.bcsAttacker,
+//				BtInfo.group10));
+//		contentPane.add(new ConnectionControl("Defender", sc.bcsDefender,
+//				BtInfo.MEOW));
+//		contentPane.add(new ConnectionControl("Attacker", sc.bcsAttacker,
+//				BtInfo.DemoD));
+//		contentPane.add(new ConnectionControl("Defender", sc.bcsDefender,
+//				BtInfo.DemoA));
 		contentPane.add(infoLabel);
 		contentPane.add(new StrategyPicker());
 		contentPane.add(new AdvancedStrategyEnabler());

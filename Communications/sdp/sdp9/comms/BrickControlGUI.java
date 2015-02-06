@@ -76,13 +76,13 @@ public class BrickControlGUI extends JFrame implements KeyListener {
 	public void keyTyped(KeyEvent key) {
 	}
 
-	public static void guiConnect(final BrickCommServer brick) throws NXTCommException {
+	public static void guiConnect(final BrickCommServer brick) {
 		new GUIConnect(brick, brickInfo);
 	}
 
 	public static void main(String[] args) {
 		BrickCommServer bcs = new BrickCommServer();
-		BrickControlGUI.guiConnect(bcs, BtInfo.MEOW);
+		// BrickControlGUI.guiConnect(bcs, BtInfo.MEOW);
 		BrickControlGUI client = new BrickControlGUI(bcs);
 		client.setVisible(true);
 	}
