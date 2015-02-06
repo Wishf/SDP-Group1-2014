@@ -1,4 +1,4 @@
-package pc.vision.gui.tools;
+package sdp.sdp9.vision.gui.tools;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -28,19 +28,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-import pc.vision.DistortionFix;
-import pc.vision.PitchConstants;
-import pc.vision.Vector2f;
-import pc.vision.YAMLConfig;
-import pc.vision.gui.GUITool;
-import pc.vision.gui.VisionGUI;
-import pc.vision.interfaces.PitchViewProvider;
-import pc.vision.interfaces.VideoReceiver;
-import pc.vision.interfaces.WorldStateReceiver;
-import pc.world.DynamicWorldState;
-import pc.world.DynamicWorldState.StateUpdateListener;
-import pc.world.Pitch;
-import pc.world.oldmodel.WorldState;
+import sdp.sdp9.vision.DistortionFix;
+import sdp.sdp9.vision.PitchConstants;
+import sdp.sdp9.vision.Vector2f;
+import sdp.sdp9.vision.YAMLConfig;
+import sdp.sdp9.vision.gui.GUITool;
+import sdp.sdp9.vision.gui.VisionGUI;
+import sdp.sdp9.vision.interfaces.PitchViewProvider;
+import sdp.sdp9.vision.interfaces.VideoReceiver;
+import sdp.sdp9.vision.interfaces.WorldStateReceiver;
+import sdp.sdp9.world.DynamicWorldState;
+import sdp.sdp9.world.DynamicWorldState.StateUpdateListener;
+import sdp.sdp9.world.Pitch;
+import sdp.sdp9.world.oldmodel.WorldState;
 
 public class PitchModelView implements GUITool, VideoReceiver,
 		StateUpdateListener {

@@ -6,9 +6,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
-import pc.strategy.StrategyController;
-import pc.strategy.interfaces.Strategy;
-import pc.vision.interfaces.VideoReceiver;
+import sdp.sdp9.strategy.StrategyController;
+import sdp.sdp9.strategy.interfaces.Strategy;
+import sdp.sdp9.vision.interfaces.VideoReceiver;
 import au.edu.jcu.v4l4j.CaptureCallback;
 import au.edu.jcu.v4l4j.Control;
 import au.edu.jcu.v4l4j.DeviceInfo;

@@ -1,4 +1,4 @@
-package pc.vision.gui.tools;
+package sdp.sdp9.vision.gui.tools;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -28,13 +28,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import pc.vision.PitchConstants;
-import pc.vision.PixelInfo;
-import pc.vision.gui.GUITool;
-import pc.vision.gui.InvertibleRangeSlider;
-import pc.vision.gui.VisionGUI;
-import pc.vision.interfaces.ObjectRecogniser;
-import pc.world.StaticWorldState;
+import sdp.sdp9.vision.PitchConstants;
+import sdp.sdp9.vision.PixelInfo;
+import sdp.sdp9.vision.gui.GUITool;
+import sdp.sdp9.vision.gui.InvertibleRangeSlider;
+import sdp.sdp9.vision.gui.VisionGUI;
+import sdp.sdp9.vision.interfaces.ObjectRecogniser;
+import sdp.sdp9.world.StaticWorldState;
 
 public class HistogramTool implements GUITool, ObjectRecogniser {
 	private static final String[] CHANNEL_NAMES = { "Red", "Green", "Blue",

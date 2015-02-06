@@ -6,13 +6,13 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import pc.vision.interfaces.ObjectRecogniser;
-import pc.vision.interfaces.VideoReceiver;
-import pc.vision.interfaces.VisionDebugReceiver;
-import pc.vision.interfaces.WorldStateReceiver;
-import pc.world.DynamicWorldState;
-import pc.world.StaticWorldState;
-import pc.world.oldmodel.WorldState;
+import sdp.sdp9.vision.interfaces.ObjectRecogniser;
+import sdp.sdp9.vision.interfaces.VideoReceiver;
+import sdp.sdp9.vision.interfaces.VisionDebugReceiver;
+import sdp.sdp9.vision.interfaces.WorldStateReceiver;
+import sdp.sdp9.world.DynamicWorldState;
+import sdp.sdp9.world.StaticWorldState;
+import sdp.sdp9.world.oldmodel.WorldState;
 
 /**
  * The main class for showing the video feed and processing the video data.

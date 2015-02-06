@@ -41,7 +41,7 @@ void setup() {
   
   SDPsetup(); 
   motorAllStop();
-  debugPrint("STARTED");// transmit started packet
+  debugPrint("started");// transmit started packet
 }
 
 
@@ -54,6 +54,7 @@ void loop() {
   readComms();
   if(queue.update() == 1)
   {
+    Serial.write('O');
     queueChanged = true;
   }
  
@@ -141,6 +142,7 @@ void doMotors(){
       for( ; i < MOTOR_N; i++)
       {
          if(motorMapping[i] > -1){
+           debugPrint(current->power[i]);
            moveMotor(motorMapping[i], current->power[i] * current->direction[i] * motorMultiplier[i]);
          }
       }
@@ -148,6 +150,7 @@ void doMotors(){
       for( ; i < MOTOR_N; i++)
       {
          if(motorMapping[i] > -1){
+           debugPrint("disabled");
            moveMotor(motorMapping[i], 0);
          }
       }
@@ -163,13 +166,13 @@ void readComms(){
     if (incoming == 'D') //Deactivate
     {
       Serial.print('C');
-      debugPrint("DEACTIVATED ");
+      debugPrint("deactivated");
       ON = false;
     }
     else if (incoming == 'A') // Activate
     {
       Serial.print('C');
-      debugPrint("ACTIVATED ");
+      debugPrint("activated");
       ON = true;
       
       queueChanged = false;
@@ -179,7 +182,7 @@ void readComms(){
     else if (incoming == 'K') // Kick
     {
       Serial.print('C');
-      debugPrint("KICK");
+      debugPrint("kick");
       
       int nextByte = waitForByte();   
       
@@ -193,7 +196,7 @@ void readComms(){
     }
     else if (incoming == 'R') // Sensor read
     {
-      debugPrint("READ");
+      debugPrint("read");
       int nextByte = waitForByte(); 
       //Read sensor
       //Reply
@@ -237,19 +240,19 @@ void readComms(){
       // Clear queue
       queue.clear();
       Serial.print('C');
-      debugPrint("CLEAR");
+      debugPrint("clear");
     }
     else if (incoming == 'P') // Pop from queue
     {
       // Queue pop
       queue.pop();
       Serial.print('C');
-      debugPrint("POP");
+      debugPrint("pop");
     }
     else{
       Serial.print('E');
       
-      debugPrint(" GET OFF MY LAWN ");      
+      debugPrint("get off my lawn");      
     }
   }   
 }

@@ -5,9 +5,9 @@
  * Yes, i know it is a dumb way to test, I will change it when I have time.
  * */
 
-package pc.test;
-import pc.prediction.*;
-import pc.world.oldmodel.Point2;
+package sdp.sdp9.test;
+import sdp.sdp9.prediction.*;
+import sdp.sdp9.world.oldmodel.Point2;
 
 import java.util.ArrayList;
 import java.io.*;

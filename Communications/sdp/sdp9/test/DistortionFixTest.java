@@ -1,4 +1,4 @@
-package pc.test;
+package sdp.sdp9.test;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -7,8 +7,8 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import pc.vision.DistortionFix;
-import pc.vision.PitchConstants;
+import sdp.sdp9.vision.DistortionFix;
+import sdp.sdp9.vision.PitchConstants;
 
 // A class to test DistortionFix using an image of the pitch
 

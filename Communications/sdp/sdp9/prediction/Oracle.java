@@ -6,7 +6,7 @@
  * possibly implement a prediction scheme for 4 or less points
  * **/
 
-package package sdp.sdp9.prediction;
+package sdp.sdp9.prediction;
 
 import sdp.sdp9.prediction.Calculations.CorrectionType;
 import sdp.sdp9.world.oldmodel.*;
