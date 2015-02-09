@@ -19,28 +19,27 @@ public abstract class BaseRobotController implements PacketListener {
         radio.addListener(this);
     }
 
-    public void enqueueMotion(Maneuver maneuver) {
-        if(motions.enqueue(maneuver)) {
-            EnqueueMotionPacket pkt = new EnqueueMotionPacket(
-                    maneuver.getMotorPower(0),
-                    maneuver.getMotorDirection(0),
-                    maneuver.getMotorPower(1),
-                    maneuver.getMotorDirection(1),
-                    maneuver.getMotorPower(2),
-                    maneuver.getMotorDirection(2),
-                    maneuver.getDuration()
-            );
-            radio.sendPacket(pkt);
+    public boolean sendCommand(RobotCommand command) {
+        if(command.canQueue()){
+            Maneuver m = (Maneuver) command;
+            if(motions.enqueue(m)) {
+                radio.sendPacket(m.toPacket());
+                return true;
+            }
+
+            return false;
         }
 
+        radio.sendPacket(command.toPacket());
+        return true;
     }
 
-    public void popMotion() {
+    public void popQueue() {
         motions.pop();
         radio.sendPacket(new PopQueuePacket());
     }
 
-    public void clearMotions(){
+    public void clearQueue(){
         motions.clear();
         radio.sendPacket(new ClearQueuePacket());
     }
