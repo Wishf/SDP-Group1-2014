@@ -5,6 +5,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import sdp.sdp9.comms.BrickCommServer;
+import sdp.sdp9.comms.RobotCommand;
 import sdp.sdp9.vision.Vector2f;
 import sdp.sdp9.vision.interfaces.WorldStateReceiver;
 import sdp.sdp9.world.oldmodel.WorldState;
@@ -128,23 +129,21 @@ public class TargetFollowerStrategy implements WorldStateReceiver {
 					case DO_NOTHING:
 						break;
 					case TRAVEL:
-						brick.robotTravel(travelDist, travelSpeed);
+						brick.execute(new RobotCommand.Travel(travelDist, travelSpeed));
 						break;
 					// case ROTATE:
 					// brick.robotRotateBy(rotateBy, travelSpeed);
 					// break;
 					case ARC_LEFT:
-						brick.robotArcForwards(radius, travelDist, travelSpeed);
+						brick.execute(new RobotCommand.TravelArc(radius, travelDist, travelSpeed));
 						break;
 					case ARC_RIGHT:
-						brick.robotArcForwards(-radius, travelDist, travelSpeed);
+						brick.execute(new RobotCommand.TravelArc(-radius, travelDist, travelSpeed));
 						break;
 					}
 
 					Thread.sleep(StrategyController.STRATEGY_TICK);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

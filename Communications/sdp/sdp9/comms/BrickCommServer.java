@@ -88,11 +88,8 @@ public class BrickCommServer {
 	 * frame grabber thread!
 	 */
 	public void executeSync(RobotCommand.Command command) {
-		if (brickOutput == null)
-			return;
 		try {
-			command.sendToBrick(brickOutput);
-			brickOutput.flush();
+			command.sendToBrick(comm);
 		} catch (IOException e) {
 			e.printStackTrace();
 			close();

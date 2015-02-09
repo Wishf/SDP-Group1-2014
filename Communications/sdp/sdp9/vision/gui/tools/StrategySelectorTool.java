@@ -94,35 +94,18 @@ public class StrategySelectorTool implements GUITool {
 			BrickCommServer.StateChangeListener {
 		private String role;
 		private BrickCommServer bcs;
-		private NXTInfo target;
 
 		private JLabel statusLabel;
-		private JButton connectBtn;
 		private JButton disconnectBtn;
 		private JButton resetCatcherBtn;
 
-		public ConnectionControl(String role, final BrickCommServer bcs,
-				final NXTInfo target) {
+		public ConnectionControl(String role, final BrickCommServer bcs) {
 			this.role = role;
 			this.bcs = bcs;
-			this.target = target;
 			bcs.addStateChangeListener(this);
 
 			statusLabel = new JLabel();
 			add(statusLabel);
-
-			connectBtn = new JButton("Connect to " + target.name);
-			connectBtn.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					try {
-						BrickControlGUI.guiConnect(bcs, target);
-					} catch (NXTCommException e) {
-					}
-				}
-			});
-			add(connectBtn);
 
 			disconnectBtn = new JButton("Disconnect");
 			disconnectBtn.addActionListener(new ActionListener() {
@@ -149,10 +132,6 @@ public class StrategySelectorTool implements GUITool {
 
 		@Override
 		public void stateChanged() {
-			String status = bcs.isConnected() ? "connected to " + target.name
-					: "not connected";
-			statusLabel.setText(role + ": " + status);
-			connectBtn.setVisible(!bcs.isConnected());
 			disconnectBtn.setVisible(bcs.isConnected());
 			resetCatcherBtn.setVisible(bcs.isConnected());
 		}

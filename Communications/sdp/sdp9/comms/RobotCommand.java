@@ -39,20 +39,6 @@ public class RobotCommand {
 		}
 	}
 
-	public static class Forwards extends GenericCommand {
-		@Override
-		protected Packet getOpcode() {
-			return new EnqueueMotionPacket(FORWARD_SPEED, DriveDirection.FORWARD, FORWARD_SPEED, DriveDirection.FORWARD, STOP_SPEED, DriveDirection.FORWARD, 65000);
-		}
-	}
-
-	public static class Backwards extends GenericCommand {
-		@Override
-		protected Packet getOpcode() {
-            return new EnqueueMotionPacket(BACKWARD_SPEED, DriveDirection.BACKWARD, BACKWARD_SPEED, DriveDirection.BACKWARD, STOP_SPEED, DriveDirection.FORWARD, 65000);
-		}
-	}
-
 	public static class Kick extends GenericCommand {
 		private byte speed;
 
@@ -70,25 +56,7 @@ public class RobotCommand {
 	public static class Catch extends GenericCommand {
 		@Override
 		protected Packet getOpcode() {
-            // TODO!!!
-            return new ErrorPacket();
-		}
-	}
-
-
-	public static class RotateLeft extends GenericCommand {
-		@Override
-		protected Packet getOpcode() {
-            return new EnqueueMotionPacket(STOP_SPEED, DriveDirection.FORWARD, STOP_SPEED, DriveDirection.FORWARD,
-                    ROTATION_SPEED, DriveDirection.FORWARD, TIME_TO_MOVE_90_DEGREES);
-		}
-	}
-
-	public static class RotateRight extends GenericCommand {
-		@Override
-		protected Packet getOpcode() {
-            return new EnqueueMotionPacket(STOP_SPEED, DriveDirection.FORWARD, STOP_SPEED, DriveDirection.FORWARD,
-                    ROTATION_SPEED, DriveDirection.BACKWARD, TIME_TO_MOVE_90_DEGREES);
+			return new EngageCatcherPacket();
 		}
 	}
 
@@ -115,6 +83,7 @@ public class RobotCommand {
 		@Override
 		protected Packet getOpcode() {
 
+			// TODO: Handle rotation
             return new EnqueueMotionPacket(STOP_SPEED, DriveDirection.FORWARD, STOP_SPEED, DriveDirection.FORWARD,
                     speed, DriveDirection.FORWARD, TIME_TO_MOVE_90_DEGREES);
 		}
@@ -132,18 +101,11 @@ public class RobotCommand {
 		}
 
 		@Override
-		protected int getOpcode() {
-			return RobotOpcode.ARC_FORWARDS;
+		protected Packet getOpcode() {
+			// TODO: Handle Arcs
+			return new ErrorPacket();
 		}
 
-		@Override
-		public void sendToBrick(DataOutputStream outputStream)
-				throws IOException {
-			super.sendToBrick(outputStream);
-			outputStream.writeDouble(arcRadius);
-			outputStream.writeInt(distance);
-			outputStream.writeInt(speed);
-		}
 	}
 
 	public static class Travel extends GenericCommand {
@@ -156,23 +118,16 @@ public class RobotCommand {
 		}
 		
 		@Override
-		protected int getOpcode() {
-			return RobotOpcode.TRAVEL;
-		}
-		
-		@Override
-		public void sendToBrick(DataOutputStream outputStream)
-				throws IOException {
-			super.sendToBrick(outputStream);
-			outputStream.writeInt(distance);
-			outputStream.writeInt(travelSpeed);
+		protected Packet getOpcode() {
+			// TODO: Handle travel
+			return new ErrorPacket();
 		}
 	}
 	
 	public static class ResetCatcher extends GenericCommand {
 		@Override
-		protected int getOpcode() {
-			return RobotOpcode.RESET_CATCHER;
+		protected Packet getOpcode() {
+			return new DisengageCatcherPacket();
 		}
 	}
 }

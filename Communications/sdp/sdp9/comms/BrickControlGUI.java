@@ -77,7 +77,7 @@ public class BrickControlGUI extends JFrame implements KeyListener {
 	}
 
 	public static void guiConnect(final BrickCommServer brick) {
-		new GUIConnect(brick, brickInfo);
+		new GUIConnect(brick);
 	}
 
 	public static void main(String[] args) {
@@ -97,50 +97,7 @@ public class BrickControlGUI extends JFrame implements KeyListener {
 			window.setResizable(false);
 			window.setLocationRelativeTo(null);
 			window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			JLabel label = new JLabel("Connecting to " + brickInfo.name, JLabel.CENTER);
-			window.add(label);
-
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						while (true) {
-							try {
-								brick.connect(brickInfo);
-								break;
-							} catch (NXTCommException e) {
-								
-								int result = JOptionPane.showConfirmDialog(
-										window,
-										"Connection failed. Retry?\n\n"
-												+ e.getMessage() + "\n\n"
-												+ e.getCause(),
-										"Connection failed",
-										JOptionPane.YES_NO_OPTION,
-										JOptionPane.ERROR_MESSAGE);
-								if (result == JOptionPane.YES_OPTION)
-									continue;
-								
-								exception = e;
-								return;
-							}
-						}
-					} finally {
-						SwingUtilities.invokeLater(new Runnable() {
-
-							@Override
-							public void run() {
-								window.dispose();
-							}
-						});
-					}
-				}
-			}).start();
-
 			window.setVisible(true);
-			if (exception != null)
-				throw exception;
 		}
 	}
 }
