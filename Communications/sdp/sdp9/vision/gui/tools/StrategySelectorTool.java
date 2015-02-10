@@ -190,8 +190,25 @@ public class StrategySelectorTool implements GUITool {
 					sc.changeToStrategy(StrategyType.DO_NOTHING);
 				}
 			});
-            mstAStrat.addActionListener((e) -> { sc.changeToStrategy(StrategyType.MILESTONE_TWO_A); });
-            mstBStrat.addActionListener((e) -> { sc.changeToStrategy(StrategyType.MILESTONE_TWO_B); });
+            //mstAStrat.addActionListener((e) -> { sc.changeToStrategy(StrategyType.MILESTONE_TWO_A); });
+            //mstBStrat.addActionListener((e) -> { sc.changeToStrategy(StrategyType.MILESTONE_TWO_B); });
+			
+			mstAStrat.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					sc.changeToStrategy(StrategyType.MILESTONE_TWO_A);
+				}
+			});
+			
+			mstBStrat.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					sc.changeToStrategy(StrategyType.MILESTONE_TWO_B);
+				}
+			});
+			
 			pauseController.addActionListener(new ActionListener() {
 
 				@Override
