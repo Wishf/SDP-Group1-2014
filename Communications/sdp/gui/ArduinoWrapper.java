@@ -2,6 +2,7 @@ package sdp.gui;
 
 import sdp.comms.Radio;
 import sdp.comms.packets.*;
+import sdp.util.DriveDirection;
 
 import java.util.ArrayList;
 
@@ -63,7 +64,9 @@ public class ArduinoWrapper implements Runnable {
         } else if(command.equals("Stop")) {
             //rad.stop();
         } else if(command.equals("50cm Forward")) {
-            goForward(73);
+            goForward(1);
+            goForward(10);
+            goForward(100);
         } else if(command.equals("10cm Forward")) {
             goForward(27);
         } else if(command.equals("20cm Backward")) {
@@ -91,24 +94,22 @@ public class ArduinoWrapper implements Runnable {
 
     private void goForward(int cm) {
         byte speed_l, speed_r;
-        byte dir_l, dir_r;
         byte stop = (byte) 0;
         int time = Math.abs(cm*timePerCm);
+        DriveDirection dir;
         if(cm < 0) {
             // Backward
             speed_l = (byte) 188; //188
             speed_r = (byte) 158;
-            dir_l = 1;
-            dir_r = 1;
+            dir = DriveDirection.FORWARD;
         } else {
             // Forward
+        	dir = DriveDirection.BACKWARD;
             speed_l = (byte) 255;
             speed_r = (byte) 255; //163
-            dir_l = 0;
-            dir_r = 0;
-
-
         }
+       
+        rad.sendPacket(new EnqueueMotionPacket(speed_l, dir, speed_r, dir, stop, dir, time));
         debugWindow.addDebugInfo("Going " + Integer.toString(cm) + "cm forward. Will take " + Integer.toString(time) + "ms");
         //rad.sendPacket(new DrivePacket(speed_l, dir_l, speed_r, dir_r));
         //PacketLifeTime plt = new PacketLifeTime(new DrivePacket(stop, stop, stop, stop), time);
@@ -124,7 +125,7 @@ public class ArduinoWrapper implements Runnable {
 
     @Override
     public void run() {
-        rad = new SingletonRadio();
+        rad = new SingletonRadio("/dev/ttyACM1");
         debugWindow.addDebugInfo("Started Arduino");
 
         boolean go = true;

@@ -21,9 +21,11 @@ public class Radio {
     private List<PacketListener> listenerList;
 
     public Radio(String portName){
-        port = new SerialPort(portName);
-        packetQueue = new LinkedList<Packet>();
-        listenerList = new LinkedList<PacketListener>();
+    	if(portName != null) {
+    		port = new SerialPort(portName);
+            packetQueue = new LinkedList<Packet>();
+            listenerList = new LinkedList<PacketListener>();
+    	}
     }
 
     public static void getPortNames() {
@@ -62,6 +64,7 @@ public class Radio {
         if(next != null) {
             System.out.println("Sent packet");
             try {
+            	System.out.println(packet);
                 next.writePacket(port);
             } catch (SerialPortException e) {
                 e.printStackTrace();

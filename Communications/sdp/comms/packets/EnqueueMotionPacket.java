@@ -2,6 +2,7 @@ package sdp.comms.packets;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import sdp.sdp9.strategy.StrategyController;
 import sdp.util.CircularByteBuffer;
 import sdp.util.DriveDirection;
 
@@ -37,6 +38,11 @@ public class EnqueueMotionPacket extends Packet {
         motorPowers[5] = motor3Direction.getEncoding();
 
         this.millis = millis;
+        
+        if(this.millis > StrategyController.STRATEGY_TICK * 0.5)
+        	this.millis = (int) (StrategyController.STRATEGY_TICK * 0.5);
+        if(this.millis < 200)
+        	this.millis = 200;
 
     }
 
@@ -70,5 +76,22 @@ public class EnqueueMotionPacket extends Packet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public String toString() {
+    	
+    	String str = "Motion: ";
+    	
+    	for(int i = 0; i < 6; i++) {
+    		String byteString = Byte.toString(motorPowers[i]);
+    		str += byteString + "; ";
+    	}
+    	
+    	str += millis;
+    	
+    	return str;
+    	
+    	
     }
 }

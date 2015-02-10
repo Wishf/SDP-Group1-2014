@@ -4,18 +4,24 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
+import sdp.comms.packets.ActivatePacket;
+import sdp.comms.packets.ClearQueuePacket;
+import sdp.comms.packets.DeactivatePacket;
+import sdp.comms.packets.EnqueueMotionPacket;
+import sdp.gui.SingletonRadio;
 import sdp.sdp9.comms.BrickCommServer;
 import sdp.sdp9.strategy.interfaces.Strategy;
 import sdp.sdp9.vision.interfaces.WorldStateReceiver;
 import sdp.sdp9.world.oldmodel.WorldState;
+import sdp.util.DriveDirection;
 
 public class StrategyController implements WorldStateReceiver {
 
 	/** Measured in milliseconds */
-	public static final int STRATEGY_TICK = 100; // TODO: Test lower values for this and see where it breaks
+	public static final int STRATEGY_TICK = 1000; //100; // TODO: Test lower values for this and see where it breaks
 	
 	public enum StrategyType {
-		DO_NOTHING, PASSING, ATTACKING, DEFENDING, MARKING, MILESTONE_TWO_A, MILESTONE_TWO_B
+		DO_SOMETHING, DO_NOTHING, PASSING, ATTACKING, DEFENDING, MARKING, MILESTONE_TWO_A, MILESTONE_TWO_B
 	}
 	
 	public enum BallLocation{
@@ -90,10 +96,14 @@ public class StrategyController implements WorldStateReceiver {
 			StrategyController.removedStrategies.add(s);
 		}
 		StrategyController.currentStrategies = new ArrayList<Strategy>();
-		
+		SingletonRadio radio = new SingletonRadio("/dev/ttyACM1");
 		switch (type) {
+		case DO_SOMETHING:	
+			radio.sendPacket(new ActivatePacket());
+			
+			break;
         case MILESTONE_TWO_A:
-            Strategy ics = new InterceptorStrategy(this.bcsDefender);
+            Strategy ics = new DefenderStrategy(this.bcsDefender);
             StrategyController.currentStrategies.add(ics);
             ics.startControlThread();
             break;
@@ -103,6 +113,10 @@ public class StrategyController implements WorldStateReceiver {
             ats.startControlThread();
             break;
 		case DO_NOTHING:
+			radio.sendPacket(new ClearQueuePacket());
+			byte stop = 0;
+			DriveDirection fw = DriveDirection.FORWARD;
+			radio.sendPacket(new EnqueueMotionPacket(stop, fw, stop, fw, stop, fw, 0));
 			break;
 		case PASSING:
 			Strategy ps = new PassingStrategy(this.bcsAttacker,

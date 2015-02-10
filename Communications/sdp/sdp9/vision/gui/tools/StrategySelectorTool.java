@@ -139,28 +139,30 @@ public class StrategySelectorTool implements GUITool {
 
 	@SuppressWarnings("serial")
 	public class StrategyPicker extends JPanel {
-		private JButton atkStrat = new JButton("Attacking");
-		private JButton defStrat = new JButton("Defending");
-		private JButton passStrat = new JButton("Passing");
-		private JButton marStrat = new JButton("Marking");
-		private JButton nullStrat = new JButton("Do nothing");
+		//private JButton atkStrat = new JButton("Attacking");
+		//private JButton defStrat = new JButton("Defending");
+		//private JButton passStrat = new JButton("Passing");
+		//private JButton marStrat = new JButton("Marking");
+		private JButton nullStrat = new JButton("Deactivate");
+		private JButton actStrat = new JButton("Activate");
         private JButton mstAStrat = new JButton("Milestone 2 - Interceptor");
         private JButton mstBStrat = new JButton("Milestone 2 - Score");
 		private JButton pauseController = new JButton("Pause");
 		private JButton startController = new JButton("Start");
 
 		public StrategyPicker() {
-			this.add(atkStrat);
-			this.add(defStrat);
-			this.add(passStrat);
-			this.add(marStrat);
+			//this.add(atkStrat);
+			//this.add(defStrat);
+			//this.add(passStrat);
+			//this.add(marStrat);
 			this.add(nullStrat);
+			this.add(actStrat);
             this.add(mstAStrat);
             this.add(mstBStrat);
 			this.add(pauseController);
 			this.add(startController);
 
-			atkStrat.addActionListener(new ActionListener() {
+			/*atkStrat.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					sc.changeToStrategy(StrategyType.ATTACKING);
@@ -183,11 +185,18 @@ public class StrategySelectorTool implements GUITool {
 				public void actionPerformed(ActionEvent e) {
 					sc.changeToStrategy(StrategyType.MARKING);
 				}
-			});
+			});*/
 			nullStrat.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					sc.changeToStrategy(StrategyType.DO_NOTHING);
+				}
+			});
+			
+			actStrat.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					sc.changeToStrategy(StrategyType.DO_SOMETHING);
 				}
 			});
             //mstAStrat.addActionListener((e) -> { sc.changeToStrategy(StrategyType.MILESTONE_TWO_A); });

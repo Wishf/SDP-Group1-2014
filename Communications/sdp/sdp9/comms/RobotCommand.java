@@ -15,7 +15,7 @@ public class RobotCommand {
     private static int TIME_TO_MOVE_90_DEGREES = 500;
     private static byte ROTATION_SPEED = (byte) 150;
     
-    private static HolonomicRobotController robotController = new HolonomicRobotController(null, false, 150, 150, 150);
+    private static HolonomicRobotController robotController = new HolonomicRobotController(null, false, 40,40,40);
     
 	private RobotCommand() {		
 	}
@@ -117,7 +117,7 @@ public class RobotCommand {
 		
 		@Override
 		protected Packet getOpcode() {
-			return robotController.rotate(distance, travelSpeed);
+			return robotController.travel(distance, travelSpeed);
 		}
 	}
 	

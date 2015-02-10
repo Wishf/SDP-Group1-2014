@@ -16,7 +16,7 @@ public abstract class BaseRobotController implements PacketListener {
         catcherEngaged = initialCatcher;
         motions = new MotionQueue(16);
         this.radio = radio;
-        radio.addListener(this);
+        //radio.addListener(this);
     }
 
     public boolean sendCommand(RobotCommand command) {

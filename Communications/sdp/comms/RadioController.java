@@ -30,8 +30,9 @@ public class RadioController implements SerialPortEventListener {
 
     @Override
     public void serialEvent(SerialPortEvent event) {
+    	
         // Message received
-        if(event.isRXCHAR()) {
+        if (false) {//if(event.isRXCHAR()) {
             try {
                 buffer.write(parent.readBytes(event.getEventValue()), event.getEventValue());
             } catch (SerialPortException e) {

@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class HolonomicRobotController extends BaseRobotController {
 
-    private int[] msPerCm;
+    private int[] msPerMm;
     // Grey holonomic wheels are 58mm in diameter
     // http://www.microrobo.com/58mm-lego-compatible-omni-wheel.html
     private static final int WHEEL_DIAMETER = 58;
@@ -34,15 +34,15 @@ public class HolonomicRobotController extends BaseRobotController {
 
     public HolonomicRobotController(Radio radio,
                                     boolean initialCatcher,
-                                    int msPerCm_wheel1,
-                                    int msPerCm_wheel2,
-                                    int msPerCm_wheel3){
+                                    int msPerMm_wheel1,
+                                    int msPerMm_wheel2,
+                                    int msPerMm_wheel3){
         super(radio, initialCatcher);
 
-        msPerCm = new int[3];
-        msPerCm[0] = msPerCm_wheel1;
-        msPerCm[1] = msPerCm_wheel2;
-        msPerCm[2] = msPerCm_wheel3;
+        msPerMm = new int[3];
+        msPerMm[0] = msPerMm_wheel1;
+        msPerMm[1] = msPerMm_wheel2;
+        msPerMm[2] = msPerMm_wheel3;
     }
 
     @Override
@@ -52,15 +52,20 @@ public class HolonomicRobotController extends BaseRobotController {
     
     //speed in degrees per second
     public EnqueueMotionPacket rotate(int angle, int speed){
-		
+    	System.out.println("Rotate: "+angle+" "+speed);
     	
     	double turnAngle = angle * TURN_RATIO;
     	
-    	int millis = (int) Math.round(turnAngle / 360 * WHEEL_CIRCUMFERENCE * msPerCm[0]);
+    	//System.out.println("turn agnle: "+turnAngle);
+    	
+    	int millis = (int) Math.abs(Math.round(turnAngle / 360 * WHEEL_CIRCUMFERENCE * msPerMm[0] * 0.5));
+    	
+    	//System.out.print("Mi")
     	
     	//TODO: calculate the speed actually
-    	byte motor1power = (byte) 255;
-    	byte motor2power = (byte) 255;
+    	byte motor1power = (byte) 125;
+    	byte motor2power = (byte) 125;
+    	byte motor3power = (byte) 125;
     	
     	DriveDirection leftMotorDir;
     	DriveDirection rightMotorDir;
@@ -76,7 +81,7 @@ public class HolonomicRobotController extends BaseRobotController {
     	return new EnqueueMotionPacket(
     			motor1power, leftMotorDir, 
     			motor2power, rightMotorDir, 
-    			(byte) 0, DriveDirection.FORWARD,
+    			motor3power, rightMotorDir,
     			millis);    	
     }
     
@@ -84,8 +89,8 @@ public class HolonomicRobotController extends BaseRobotController {
     
     public EnqueueMotionPacket travel(int distance, int travelSpeed){
     	
-    	
-    	int millis = (int) Math.round(distance * msPerCm[0]);
+    	System.out.println("Travel: "+distance+" "+travelSpeed);
+    	int millis = (int) Math.abs(Math.round(distance * msPerMm[0]));
     	
     	//TODO: calculate the speed actually
     	byte motor1power = (byte) 255;
@@ -113,7 +118,7 @@ public class HolonomicRobotController extends BaseRobotController {
     
     public EnqueueMotionPacket travelArc(double arcRadius, int distance, int speed){
     	
-    	int millis = (int) Math.round(distance * msPerCm[0]);
+    	int millis = (int) Math.round(distance * msPerMm[0]);
     	
     	//TODO: calculate the speed actually
     	byte motor1power = (byte) 255;

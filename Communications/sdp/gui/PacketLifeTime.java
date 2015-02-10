@@ -27,7 +27,7 @@ public class PacketLifeTime implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        SingletonRadio rad = new SingletonRadio();
+        SingletonRadio rad = new SingletonRadio("/dev/ttyACM0");
         System.out.println(packet);
         rad.sendPacket(packet);
     }

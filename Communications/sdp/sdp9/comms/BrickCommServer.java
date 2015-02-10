@@ -8,7 +8,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import sdp.comms.*;
+import sdp.gui.SingletonRadio;
 
+
+/*
+ * 
+ * For two-robot setup:
+ * 		Rewrite the radio singleton so it is a "doubleton"
+ * 		Rewrite BrickCommServer so it differentiates between the attacker and defender 
+ */
 public class BrickCommServer {
 	Radio comm;
 	private boolean connected;
@@ -30,11 +38,17 @@ public class BrickCommServer {
 		stateChangeListeners = new ArrayList<BrickCommServer.StateChangeListener>();
 		connected = false;
 		executor = Executors.newSingleThreadExecutor(EXECUTOR_FACTORY);
-        comm = new Radio("COM3");
+        //comm = new Radio("COM3");
+		Radio.getPortNames();
+        comm = new SingletonRadio("/dev/ttyACM1");
+        
+        //connect();
+        
 	}
 
 	public void connect()  {
-		comm.start();
+		System.out.print("Connecting");
+		//comm.start();
 		setConnected(true);
 	}
 
