@@ -12,7 +12,7 @@ bool ON = false;
 //Moving
 #define MOTOR_N 3
 bool queueChanged = false;
-byte motorMapping[MOTOR_N] = {0, 1, 2};
+byte motorMapping[MOTOR_N] = {1, 0, 2};
 int motorMultiplier[MOTOR_N] = {1, 1, 1};
 
 //Kicking
@@ -26,43 +26,34 @@ int motorMultiplier[MOTOR_N] = {1, 1, 1};
 #define KICK_STATE_UP 3
 #define KICK_STATE_MOVING_DOWN 4
 
-#define KICK_MOTOR 3
+#define KICK_MOTOR 4
 #define KICK_MOTOR_DIR -1
 
 long kickStartTime;
 int kickState = KICK_STATE_IDLE;
 int kickPower = 0;
 
-//Catcher
-#define CATCH_ENGAGED_DELAY 200
-#define CATCH_DISENGAGED_DELAY 200
-#define CATCH_MOTOR 4
+//Catch
+#define CATCH_MOTOR 3
 
-//CatcherEngage
-#define CATCH_ENGAGED_STATE_IDLE 0
-#define CATCH_ENGAGED_STATE_START 1
-#define CATCH_ENGAGED_STATE_OPERATING 2
-#define CATCH_ENGAGED_STATE_ENGAGED 3
+#define CATCH_STATE_IDLE 0
+#define CATCH_STATE_DISENGAGE 1
+#define CATCH_STATE_ENGAGE 2
+#define CATCH_STATE_OPERATING_ENGAGE 3
+#define CATCH_STATE_OPERATING_DISENGAGE 4
+//#define CATCH_STATE_ENGAGED 5
+//#define CATCH_STATE_DISENGAGE 6
 
-#define CATCH_ENGAGED_DIR 1
-#define CATCH_ENGAGED_POWER 0
-
-long catcherEngagedStartTime;
-//int catcherEngagedPower = 0;
-int catcherEngagedState = CATCH_ENGAGED_STATE_IDLE;
-
-//CatcherDisengaged
-#define CATCH_DISENGAGED_STATE_IDLE 0
-#define CATCH_DISENGAGED_STATE_START 1
-#define CATCH_DISENGAGED_STATE_OPERATING 2
-#define CATCH_DISENGAGED_STATE_DISENGAGED 3
-
-#define CATCH_DISENGAGED_DIR -1
+#define CATCH_DISENGAGE_DIR -1
 #define CATCH_DISENGAGE_POWER 1
+#define CATCH_DISENGAGE_DELAY 200
 
-long catcherDisengagedStartTime;
-int catcherDisengagedPower = 0;
-int catcherDisengagedState = CATCH_DISENGAGED_STATE_IDLE;
+#define CATCH_ENGAGE_DIR 1
+#define CATCH_ENGAGE_POWER 1
+#define CATCH_ENGAGE_DELAY 200
+
+long catchStartTime;
+int catchState = CATCH_STATE_IDLE;
 
 // Construct a queue to store motions
 MotionQueue queue;
@@ -95,6 +86,7 @@ void loop() {
   {
     doMotors();
     doKick();
+    doCatcher();
   }
   else
   {    
@@ -124,41 +116,38 @@ void moveMotor(int motor, int power){
   }
 }
 
-void doEngageCatcher(){
-  if(catcherEngagedState == CATCH_ENGAGED_STATE_START){
-    catcherEngagedStartTime = millis();
+void doCatcher(){
+  if(catchState == CATCH_STATE_ENGAGE){
+    catchStartTime = millis();
 
-    catcherEngagedState = CATCH_ENGAGED_STATE_OPERATING;
+    catchState = CATCH_STATE_OPERATING_ENGAGE;
 
-    moveMotor(CATCH_MOTOR, CATCH_ENGAGED_POWER * CATCH_ENGAGED_DIR)
+    moveMotor(CATCH_MOTOR, CATCH_ENGAGE_POWER * CATCH_ENGAGE_DIR);
   }
-  else if(catcherEngagedState == CATCH_ENGAGED_STATE_OPERATING){
-    if(millis() - catcherEngagedStartTime >= CATCH_ENGAGED_DELAY){
-      catcherEngagedStartTime = millis();
+  else if(catchState == CATCH_STATE_OPERATING_ENGAGE){
+     if(millis() - catchStartTime >= CATCH_ENGAGE_DELAY){
+       catchStartTime = millis();
 
-      catcherEngagedState = CATCH_ENGAGED_STATE_ENGAGED;
+       catchState = CATCH_STATE_IDLE;
 
-      motorStop(CATCH_MOTOR);
-    }
+       motorStop(CATCH_MOTOR);
+     }
   }
-}
+  else if(catchState == CATCH_STATE_DISENGAGE){
+    catchStartTime = millis();
 
-void doDisengageCatcher(){
-  if(catcherDisengagedState == CATCH_DISENGAGED_STATE_START){
-    catcherDisengagedStartTime = millis();
+    catchState = CATCH_STATE_OPERATING_DISENGAGE;
 
-    catcherDisengagedState = CATCH_DISENGAGED_STATE_OPERATING;
-
-    moveMotor(CATCH_MOTOR, CATCH_DISENGAGED_POWER * CATCH_DISENGAGED_DIR)
+    moveMotor(CATCH_MOTOR, CATCH_DISENGAGE_POWER * CATCH_DISENGAGE_DIR);
   }
-  else if(catcherDisengagedState == CATCH_DISENGAGED_STATE_OPERATING){
-    if(millis() - catcherDisengagedStartTime >= CATCH_DISENGAGED_DELAY){
-      catcherDisengagedStartTime = millis();
+  else if(catchState == CATCH_STATE_OPERATING_DISENGAGE){
+      if(millis() - catchStartTime >= CATCH_DISENGAGE_DELAY){
+       catchStartTime = millis();
 
-      catcherDisengagedState = CATCH_DISENGAGED_STATE_DISENGAGED;
+       catchState = CATCH_STATE_IDLE;
 
-      motorStop(CATCH_MOTOR);
-    }
+       motorStop(CATCH_MOTOR);
+     }
   }
 }
 
@@ -319,8 +308,8 @@ void readComms(){
       Serial.print('G');
       debugPrint("catch");
 
-      if(catcherEngagedState = CATCH_ENGAGED_STATE_IDLE){
-        catcherEngagedState = CATCH_ENGAGED_STATE_START;
+      if(catchState == CATCH_STATE_IDLE){
+        catchState = CATCH_STATE_ENGAGE;
       }
     }
     else if (incoming == 'I') // Disengage catcher
@@ -328,8 +317,8 @@ void readComms(){
       Serial.print('G');
       debugPrint("uncatch");
 
-      if(catcherDisengagedState = CATCH_DISENGAGED_STATE_IDLE){
-        catcherDisengagedState = CATCH_DISENGAGED_STATE_START;
+      if(catchState == CATCH_STATE_IDLE){
+        catchState = CATCH_STATE_DISENGAGE;
       }
     }
     else{
