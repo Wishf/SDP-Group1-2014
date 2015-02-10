@@ -45,7 +45,7 @@ int kickPower = 0;
 #define CATCH_ENGAGED_STATE_ENGAGED 3
 
 #define CATCH_ENGAGED_DIR 1
-#define CATCH_ENGAGED_POWER 0
+#define CATCH_ENGAGED_POWER 1
 
 long catcherEngagedStartTime;
 //int catcherEngagedPower = 0;
@@ -58,7 +58,7 @@ int catcherEngagedState = CATCH_ENGAGED_STATE_IDLE;
 #define CATCH_DISENGAGED_STATE_DISENGAGED 3
 
 #define CATCH_DISENGAGED_DIR -1
-#define CATCH_DISENGAGE_POWER 1
+#define CATCH_DISENGAGED_POWER 1
 
 long catcherDisengagedStartTime;
 int catcherDisengagedPower = 0;
@@ -130,7 +130,7 @@ void doEngageCatcher(){
 
     catcherEngagedState = CATCH_ENGAGED_STATE_OPERATING;
 
-    moveMotor(CATCH_MOTOR, CATCH_ENGAGED_POWER * CATCH_ENGAGED_DIR)
+    moveMotor(CATCH_MOTOR, CATCH_ENGAGED_POWER * CATCH_ENGAGED_DIR);
   }
   else if(catcherEngagedState == CATCH_ENGAGED_STATE_OPERATING){
     if(millis() - catcherEngagedStartTime >= CATCH_ENGAGED_DELAY){
@@ -149,7 +149,7 @@ void doDisengageCatcher(){
 
     catcherDisengagedState = CATCH_DISENGAGED_STATE_OPERATING;
 
-    moveMotor(CATCH_MOTOR, CATCH_DISENGAGED_POWER * CATCH_DISENGAGED_DIR)
+    moveMotor(CATCH_MOTOR, CATCH_DISENGAGED_POWER * CATCH_DISENGAGED_DIR);
   }
   else if(catcherDisengagedState == CATCH_DISENGAGED_STATE_OPERATING){
     if(millis() - catcherDisengagedStartTime >= CATCH_DISENGAGED_DELAY){
