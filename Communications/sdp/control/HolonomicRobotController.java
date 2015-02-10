@@ -49,4 +49,93 @@ public class HolonomicRobotController extends BaseRobotController {
     public void onMotionComplete() {
 
     }
+    
+    //speed in degrees per second
+    public EnqueueMotionPacket rotate(int angle, int speed){
+		
+    	
+    	double turnAngle = angle * TURN_RATIO;
+    	
+    	int millis = (int) Math.round(turnAngle / 360 * WHEEL_CIRCUMFERENCE * msPerCm[0]);
+    	
+    	//TODO: calculate the speed actually
+    	byte motor1power = (byte) 255;
+    	byte motor2power = (byte) 255;
+    	
+    	DriveDirection leftMotorDir;
+    	DriveDirection rightMotorDir;
+    	
+    	if(angle > 0){
+    		leftMotorDir = DriveDirection.FORWARD;
+    		rightMotorDir = DriveDirection.BACKWARD;
+    	} else {
+    		leftMotorDir = DriveDirection.BACKWARD;
+    		rightMotorDir = DriveDirection.FORWARD;
+    	}
+    	
+    	return new EnqueueMotionPacket(
+    			motor1power, leftMotorDir, 
+    			motor2power, rightMotorDir, 
+    			(byte) 0, DriveDirection.FORWARD,
+    			millis);    	
+    }
+    
+    
+    
+    public EnqueueMotionPacket travel(int distance, int travelSpeed){
+    	
+    	
+    	int millis = (int) Math.round(distance * msPerCm[0]);
+    	
+    	//TODO: calculate the speed actually
+    	byte motor1power = (byte) 255;
+    	byte motor2power = (byte) 255;
+    	
+    	DriveDirection leftMotorDir;
+    	DriveDirection rightMotorDir;
+    	
+    	if(distance > 0){
+    		leftMotorDir = DriveDirection.FORWARD;
+    		rightMotorDir = DriveDirection.FORWARD;
+    	} else {
+    		leftMotorDir = DriveDirection.BACKWARD;
+    		rightMotorDir = DriveDirection.BACKWARD;
+    	}
+    	
+    	return new EnqueueMotionPacket(
+    			motor1power, leftMotorDir, 
+    			motor2power, rightMotorDir, 
+    			(byte) 0, DriveDirection.FORWARD,
+    			millis); 
+    	
+    }
+    
+    
+    public EnqueueMotionPacket travelArc(double arcRadius, int distance, int speed){
+    	
+    	int millis = (int) Math.round(distance * msPerCm[0]);
+    	
+    	//TODO: calculate the speed actually
+    	byte motor1power = (byte) 255;
+    	byte motor2power = (byte) 255;
+    	
+    	DriveDirection leftMotorDir;
+    	DriveDirection rightMotorDir;
+    	
+    	if(distance > 0){
+    		leftMotorDir = DriveDirection.FORWARD;
+    		rightMotorDir = DriveDirection.FORWARD;
+    	} else {
+    		leftMotorDir = DriveDirection.BACKWARD;
+    		rightMotorDir = DriveDirection.BACKWARD;
+    	}
+    	
+    	return new EnqueueMotionPacket(
+    			motor1power, leftMotorDir, 
+    			motor2power, rightMotorDir, 
+    			(byte) 0, DriveDirection.FORWARD,
+    			millis); 
+    	
+    }
+    
 }
