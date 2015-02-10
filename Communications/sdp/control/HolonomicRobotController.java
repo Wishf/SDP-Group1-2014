@@ -1,6 +1,10 @@
 package sdp.control;
 
 import sdp.comms.Radio;
+import sdp.comms.packets.*;
+import sdp.util.DriveDirection;
+
+import java.io.IOException;
 
 /**
  * Created by Matthew on 09/02/2015.
@@ -18,9 +22,14 @@ public class HolonomicRobotController extends BaseRobotController {
     private static final double WHEEL_RIGHT_DIST = 57.5;
     private static final double WHEEL_BACK_DIST = 80;
 
+    // Front axle track width
+    private static final double TRACK_WIDTH = WHEEL_LEFT_DIST + WHEEL_RIGHT_DIST;
+    private static final double TURN_RATIO = TRACK_WIDTH / WHEEL_DIAMETER;
+
     private static final int GROUP9_WHEEL_DIAMETER = 57;
     private static final double GROUP9_WHEEL_CIRCUMFERENCE = Math.PI * GROUP9_WHEEL_DIAMETER;
 
+    // Ratio to convert speed from group 9 to speed fitting our wheels
     private static final double WHEEL_RATIO = GROUP9_WHEEL_DIAMETER / (double)WHEEL_DIAMETER;
 
     public HolonomicRobotController(Radio radio,
