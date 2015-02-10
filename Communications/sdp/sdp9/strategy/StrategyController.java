@@ -134,7 +134,7 @@ public class StrategyController implements WorldStateReceiver {
 			break;
 		case MARKING:
 			Strategy newMar = new newMarkingStrategy(this.bcsAttacker);
-			Strategy ics = new InterceptorStrategy(this.bcsDefender);
+			ics = new InterceptorStrategy(this.bcsDefender);
 			StrategyController.currentStrategies.add(newMar);
 			StrategyController.currentStrategies.add(ics);
 			newMar.startControlThread();

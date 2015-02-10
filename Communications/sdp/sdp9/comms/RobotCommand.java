@@ -2,9 +2,11 @@ package sdp.sdp9.comms;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+
 import sdp.comms.packets.*;
 import sdp.util.DriveDirection;
 import sdp.comms.Radio;
+import sdp.control.HolonomicRobotController;
 
 public class RobotCommand {
     private static byte FORWARD_SPEED = (byte) 200;
@@ -12,7 +14,10 @@ public class RobotCommand {
     private static byte STOP_SPEED = (byte) 0;
     private static int TIME_TO_MOVE_90_DEGREES = 500;
     private static byte ROTATION_SPEED = (byte) 150;
-	private RobotCommand() {
+    
+    private static HolonomicRobotController robotController = new HolonomicRobotController(null, false, 150, 150, 150);
+    
+	private RobotCommand() {		
 	}
 
 	public interface Command {
@@ -66,11 +71,7 @@ public class RobotCommand {
 		private byte speed;
 
 		public Rotate(int angle, int speed, boolean immediateReturn){
-            if(angle > 0) {
-
-            } else {
-
-            }
+            
 			this.angle = angle;
 			// TODO: The speeds passed as parameters are tuned for group 9's robot; we'll need to scale them
 			this.speed = (byte)speed;
@@ -83,9 +84,7 @@ public class RobotCommand {
 		@Override
 		protected Packet getOpcode() {
 
-			// TODO: Handle rotation
-            return new EnqueueMotionPacket(STOP_SPEED, DriveDirection.FORWARD, STOP_SPEED, DriveDirection.FORWARD,
-                    speed, DriveDirection.FORWARD, TIME_TO_MOVE_90_DEGREES);
+			return robotController.rotate(angle, speed);
 		}
 	}
 
@@ -102,8 +101,7 @@ public class RobotCommand {
 
 		@Override
 		protected Packet getOpcode() {
-			// TODO: Handle Arcs
-			return new ErrorPacket();
+			return robotController.travelArc(arcRadius, distance, speed);
 		}
 
 	}
@@ -119,8 +117,7 @@ public class RobotCommand {
 		
 		@Override
 		protected Packet getOpcode() {
-			// TODO: Handle travel
-			return new ErrorPacket();
+			return robotController.rotate(distance, travelSpeed);
 		}
 	}
 	
