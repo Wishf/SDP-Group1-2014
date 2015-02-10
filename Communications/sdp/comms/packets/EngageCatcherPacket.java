@@ -11,7 +11,8 @@ public class EngageCatcherPacket extends Packet {
     public final static byte ID = 'N';
     public final static int Length = 1;
 
-    public EngageCatcherPacket(){}
+    public EngageCatcherPacket(){
+    }
 
     @Override
     public byte getID() {

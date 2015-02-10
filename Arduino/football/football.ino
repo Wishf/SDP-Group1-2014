@@ -33,6 +33,37 @@ long kickStartTime;
 int kickState = KICK_STATE_IDLE;
 int kickPower = 0;
 
+//Catcher
+#define CATCH_ENGAGED_DELAY 200
+#define CATCH_DISENGAGED_DELAY 200
+#define CATCH_MOTOR 4
+
+//CatcherEngage
+#define CATCH_ENGAGED_STATE_IDLE 0
+#define CATCH_ENGAGED_STATE_START 1
+#define CATCH_ENGAGED_STATE_OPERATING 2
+#define CATCH_ENGAGED_STATE_ENGAGED 3
+
+#define CATCH_ENGAGED_DIR 1
+#define CATCH_ENGAGED_POWER 0
+
+long catcherEngagedStartTime;
+//int catcherEngagedPower = 0;
+int catcherEngagedState = CATCH_ENGAGED_STATE_IDLE;
+
+//CatcherDisengaged
+#define CATCH_DISENGAGED_STATE_IDLE 0
+#define CATCH_DISENGAGED_STATE_START 1
+#define CATCH_DISENGAGED_STATE_OPERATING 2
+#define CATCH_DISENGAGED_STATE_DISENGAGED 3
+
+#define CATCH_DISENGAGED_DIR -1
+#define CATCH_DISENGAGE_POWER 1
+
+long catcherDisengagedStartTime;
+int catcherDisengagedPower = 0;
+int catcherDisengagedState = CATCH_DISENGAGED_STATE_IDLE;
+
 // Construct a queue to store motions
 MotionQueue queue;
 
@@ -93,7 +124,43 @@ void moveMotor(int motor, int power){
   }
 }
 
+void doEngageCatcher(){
+  if(catcherEngagedState == CATCH_ENGAGED_STATE_START){
+    catcherEngagedStartTime = millis();
 
+    catcherEngagedState = CATCH_ENGAGED_STATE_OPERATING;
+
+    moveMotor(CATCH_MOTOR, CATCH_ENGAGED_POWER * CATCH_ENGAGED_DIR)
+  }
+  else if(catcherEngagedState == CATCH_ENGAGED_STATE_OPERATING){
+    if(millis() - catcherEngagedStartTime >= CATCH_ENGAGED_DELAY){
+      catcherEngagedStartTime = millis();
+
+      catcherEngagedState = CATCH_ENGAGED_STATE_ENGAGED;
+
+      motorStop(CATCH_MOTOR);
+    }
+  }
+}
+
+void doDisengageCatcher(){
+  if(catcherDisengagedState == CATCH_DISENGAGED_STATE_START){
+    catcherDisengagedStartTime = millis();
+
+    catcherDisengagedState = CATCH_DISENGAGED_STATE_OPERATING;
+
+    moveMotor(CATCH_MOTOR, CATCH_DISENGAGED_POWER * CATCH_DISENGAGED_DIR)
+  }
+  else if(catcherDisengagedState == CATCH_DISENGAGED_STATE_OPERATING){
+    if(millis() - catcherDisengagedStartTime >= CATCH_DISENGAGED_DELAY){
+      catcherDisengagedStartTime = millis();
+
+      catcherDisengagedState = CATCH_DISENGAGED_STATE_DISENGAGED;
+
+      motorStop(CATCH_MOTOR);
+    }
+  }
+}
 
 void doKick(){  
   if(kickState == KICK_STATE_START){
@@ -128,8 +195,6 @@ void doKick(){
       motorStop(KICK_MOTOR); 
   } 
 }
-
-
 
 void doMotors(){
   if(queueChanged){
@@ -253,11 +318,19 @@ void readComms(){
     {
       Serial.print('G');
       debugPrint("catch");
+
+      if(catcherEngagedState = CATCH_ENGAGED_STATE_IDLE){
+        catcherEngagedState = CATCH_ENGAGED_STATE_START;
+      }
     }
     else if (incoming == 'I') // Disengage catcher
     {
       Serial.print('G');
       debugPrint("uncatch");
+
+      if(catcherDisengagedState = CATCH_DISENGAGED_STATE_IDLE){
+        catcherDisengagedState = CATCH_DISENGAGED_STATE_START;
+      }
     }
     else{
       Serial.print('E');
