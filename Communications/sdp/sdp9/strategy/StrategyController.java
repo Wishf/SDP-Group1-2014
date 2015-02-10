@@ -15,7 +15,7 @@ public class StrategyController implements WorldStateReceiver {
 	public static final int STRATEGY_TICK = 100; // TODO: Test lower values for this and see where it breaks
 	
 	public enum StrategyType {
-		DO_NOTHING, PASSING, ATTACKING, DEFENDING, MARKING
+		DO_NOTHING, PASSING, ATTACKING, DEFENDING, MARKING, MILESTONE_TWO_A, MILESTONE_TWO_B
 	}
 	
 	public enum BallLocation{
@@ -92,6 +92,16 @@ public class StrategyController implements WorldStateReceiver {
 		StrategyController.currentStrategies = new ArrayList<Strategy>();
 		
 		switch (type) {
+        case MILESTONE_TWO_A:
+            Strategy ics = new InterceptorStrategy(this.bcsDefender);
+            StrategyController.currentStrategies.add(ics);
+            ics.startControlThread();
+            break;
+        case MILESTONE_TWO_B:
+            Strategy ats = new AttackerStrategy(this.bcsDefender);
+            StrategyController.currentStrategies.add(ats);
+            ats.startControlThread();
+            break;
 		case DO_NOTHING:
 			break;
 		case PASSING:
