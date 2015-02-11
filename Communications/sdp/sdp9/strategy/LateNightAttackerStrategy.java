@@ -190,7 +190,7 @@ public class LateNightAttackerStrategy extends GeneralStrategy {
 			}
 			else if(move_robot) {
 				this.controlThread.operation.op = Operation.Type.DEFTRAVEL;
-				controlThread.operation.travelDistance = (int) 15;
+				controlThread.operation.travelDistance = (int) 13;
 			}
 		}
 
@@ -264,6 +264,7 @@ public class LateNightAttackerStrategy extends GeneralStrategy {
 							System.out.println("Kicking");
 							
 							brick.execute(new RobotCommand.Kick(0));
+							Thread.sleep(500);
 							brick.execute(new RobotCommand.ResetCatcher());
 							
 							kicked = true;

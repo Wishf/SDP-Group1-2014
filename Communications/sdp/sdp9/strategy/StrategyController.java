@@ -97,7 +97,7 @@ public class StrategyController implements WorldStateReceiver {
 			StrategyController.removedStrategies.add(s);
 		}
 		StrategyController.currentStrategies = new ArrayList<Strategy>();
-		SingletonRadio radio = new SingletonRadio("/dev/ttyACM1");
+		SingletonRadio radio = new SingletonRadio("/dev/ttyACM0");
 		switch (type) {
 		case DO_SOMETHING:	
 			radio.sendPacket(new ActivatePacket());

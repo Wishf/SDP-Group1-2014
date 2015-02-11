@@ -40,7 +40,7 @@ public class BrickCommServer {
 		executor = Executors.newSingleThreadExecutor(EXECUTOR_FACTORY);
         //comm = new Radio("COM3");
 		Radio.getPortNames();
-        comm = new SingletonRadio("/dev/ttyACM1");
+        comm = new SingletonRadio("/dev/ttyACM0");
         
         //connect();
         
