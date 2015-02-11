@@ -25,7 +25,7 @@ public class MainPanel extends JPanel {
 	   }  
 	   private void setimage(BufferedImage newimage){  
 	     image=newimage;  
-	     return;  
+	     return;
 	   }  
 	   /**  
 	    * Converts/writes a Mat into a BufferedImage.  

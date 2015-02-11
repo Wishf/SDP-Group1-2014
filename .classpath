@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Communications"/>
+	<classpathentry kind="src" path="Vision/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Communications/lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="Communications/lib/jssc.jar"/>
+	<classpathentry kind="lib" path="Communications/lib/snakeyaml-1.13.jar"/>
+	<classpathentry kind="lib" path="Communications/lib/v4l4j.jar"/>
+	<classpathentry kind="output" path="Vision/bin"/>
+</classpath>

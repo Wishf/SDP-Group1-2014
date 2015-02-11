@@ -58,11 +58,14 @@ public class HolonomicRobotController extends BaseRobotController {
     	
     	//System.out.println("turn agnle: "+turnAngle);
     	
-    	int millis = (int) Math.abs(Math.round((turnAngle / 360) * WHEEL_CIRCUMFERENCE * msPerMm[0] * 0.08));
+    	//int millis = (int) Math.abs(Math.round((turnAngle / 360) * WHEEL_CIRCUMFERENCE * msPerMm[0] * 0.08));
+    	
+    	// magic
+    	int millis = 150;
     	
     	System.out.print(millis);
     	
-    	double powerScale = 1;//Math.min(1, angle+90/180);
+    	double powerScale = 0.9;//Math.min(1, angle+90/180);
     	//TODO: calculate the speed actually
     	byte motor1power = (byte) (150*powerScale);
     	byte motor2power = (byte) (150*powerScale);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import sdp.comms.packets.ActivatePacket;
 import sdp.comms.packets.ClearQueuePacket;
 import sdp.comms.packets.DeactivatePacket;
+import sdp.comms.packets.DisengageCatcherPacket;
 import sdp.comms.packets.EnqueueMotionPacket;
 import sdp.gui.SingletonRadio;
 import sdp.sdp9.comms.BrickCommServer;
@@ -18,7 +19,7 @@ import sdp.util.DriveDirection;
 public class StrategyController implements WorldStateReceiver {
 
 	/** Measured in milliseconds */
-	public static final int STRATEGY_TICK = 500; //100; // TODO: Test lower values for this and see where it breaks
+	public static final int STRATEGY_TICK = 300; //100; // TODO: Test lower values for this and see where it breaks
 	
 	public enum StrategyType {
 		DO_SOMETHING, DO_NOTHING, PASSING, ATTACKING, DEFENDING, MARKING, MILESTONE_TWO_A, MILESTONE_TWO_B
@@ -103,13 +104,14 @@ public class StrategyController implements WorldStateReceiver {
 			
 			break;
         case MILESTONE_TWO_A:
+        	radio.sendPacket(new DisengageCatcherPacket());
             //Strategy ics = new DefenderStrategy(this.bcsDefender);
-        	Strategy ics = new LateNightStrategy(this.bcsDefender);
+        	Strategy ics = new LateNightDefenderStrategy(this.bcsDefender);
             StrategyController.currentStrategies.add(ics);
             ics.startControlThread();
             break;
         case MILESTONE_TWO_B:
-            Strategy ats = new AttackerStrategy(this.bcsDefender);
+            Strategy ats = new LateNightAttackerStrategy(this.bcsDefender);
             StrategyController.currentStrategies.add(ats);
             ats.startControlThread();
             break;
