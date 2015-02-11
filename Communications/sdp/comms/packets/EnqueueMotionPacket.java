@@ -39,10 +39,10 @@ public class EnqueueMotionPacket extends Packet {
 
         this.millis = millis;
         
-        if(this.millis > StrategyController.STRATEGY_TICK * 0.5)
-        	this.millis = (int) (StrategyController.STRATEGY_TICK * 0.5);
-        if(this.millis < 200)
-        	this.millis = 200;
+        if(this.millis > StrategyController.STRATEGY_TICK * 0.8)
+        	this.millis = (int) (StrategyController.STRATEGY_TICK * 0.8);
+        if(this.millis < 50)
+        	this.millis = 50;
 
     }
 

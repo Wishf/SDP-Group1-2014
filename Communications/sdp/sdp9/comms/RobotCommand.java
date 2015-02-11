@@ -121,6 +121,21 @@ public class RobotCommand {
 		}
 	}
 	
+	public static class TravelSideways extends GenericCommand {
+		private int distance;
+		private int travelSpeed;
+		
+		public TravelSideways(int distance, int travelSpeed) {
+			this.distance = distance;
+			this.travelSpeed = travelSpeed;
+		}
+		
+		@Override
+		protected Packet getOpcode() {
+			return robotController.travelSideways(distance, travelSpeed);
+		}
+	}
+	
 	public static class ResetCatcher extends GenericCommand {
 		@Override
 		protected Packet getOpcode() {

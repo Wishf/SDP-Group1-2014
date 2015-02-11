@@ -58,14 +58,15 @@ public class HolonomicRobotController extends BaseRobotController {
     	
     	//System.out.println("turn agnle: "+turnAngle);
     	
-    	int millis = (int) Math.abs(Math.round(turnAngle / 360 * WHEEL_CIRCUMFERENCE * msPerMm[0] * 0.5));
+    	int millis = (int) Math.abs(Math.round((turnAngle / 360) * WHEEL_CIRCUMFERENCE * msPerMm[0] * 0.08));
     	
-    	//System.out.print("Mi")
+    	System.out.print(millis);
     	
+    	double powerScale = 1;//Math.min(1, angle+90/180);
     	//TODO: calculate the speed actually
-    	byte motor1power = (byte) 125;
-    	byte motor2power = (byte) 125;
-    	byte motor3power = (byte) 125;
+    	byte motor1power = (byte) (150*powerScale);
+    	byte motor2power = (byte) (150*powerScale);
+    	byte motor3power = (byte) (150*powerScale);
     	
     	DriveDirection leftMotorDir;
     	DriveDirection rightMotorDir;
@@ -114,6 +115,41 @@ public class HolonomicRobotController extends BaseRobotController {
     			millis); 
     	
     }
+    
+    
+public EnqueueMotionPacket travelSideways(int distance, int travelSpeed){
+    	
+    	System.out.println("Travel sideways: "+distance+" "+travelSpeed);
+    	int millis = (int) Math.abs(Math.round(distance * msPerMm[2]));
+    	
+    	//TODO: calculate the speed actually
+    	double powerScaling = 1;//Math.min(1, Math.abs(distance) / 50);
+    	
+    	byte motor1power = (byte) 0;
+    	byte motor2power = (byte) 0;
+    	byte motor3power = (byte) Math.max(100, (255 * powerScaling));
+    	
+    	System.out.println(motor3power);
+    	
+    	DriveDirection leftMotorDir = DriveDirection.FORWARD;
+    	DriveDirection rightMotorDir = DriveDirection.FORWARD;
+    	DriveDirection rearMotorDir;
+    	
+    	if(distance > 0){
+    		rearMotorDir = DriveDirection.FORWARD;
+    	} else {
+    		rearMotorDir = DriveDirection.BACKWARD;
+    	}
+    	
+    	return new EnqueueMotionPacket(
+    			motor1power, leftMotorDir, 
+    			motor2power, rightMotorDir, 
+    			motor3power, rearMotorDir,
+    			millis); 
+    	
+    }
+    
+    
     
     
     public EnqueueMotionPacket travelArc(double arcRadius, int distance, int speed){

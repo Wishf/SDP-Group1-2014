@@ -36,7 +36,7 @@ public class PositionPrediction {
 
         Vector newPosition = new Vector(newX, newY);
 
-        if (insidePitch(newPosition) || willScore(newPosition)) {
+        if (insidePitch(newPosition)) {
             return newPosition;
         } else {
             reflect(newPosition);
