@@ -54,7 +54,7 @@ public class RunVision {
 
 		final YAMLConfig yamlConfig = new YAMLConfig();
 		// 0 = default to main pitch
-		final PitchConstants pitchConstants = new PitchConstants(0);
+		final PitchConstants pitchConstants = new PitchConstants(1);
 		final Pitch pitch = new Pitch(yamlConfig, pitchConstants);
 		WorldState worldState = new WorldState(pitch);
 
